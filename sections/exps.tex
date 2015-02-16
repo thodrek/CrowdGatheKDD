@@ -3,24 +3,24 @@
 
 \section{Experimental Evaluation}
 \label{sec:exps}
-In this section we present an empirical evaluation of our proposed algorithmic framework. The main questions we seek to address are: (1) how the proposed querying policy algorithm compares against baselines for maximizing the number of extracted entities under a specific budget, (2) how the different gain estimators presented in \Cref{sec:gainestimators} compare with each other, and (3) how the proposed querying policy algorithm exploits the structure of the input domain to construct the set of available actions.
+We present an empirical evaluation of our proposed algorithmic framework. The main questions we seek to address are: (1) how the proposed querying policy algorithm compares against baselines for maximizing the number of extracted entities under a specific budget, (2) how the different gain estimators presented in \Cref{sec:gainestimators} compare with each other, and (3) how the proposed querying policy algorithm exploits the structure of the input domain to construct the set of available actions.
 
 We empirically study these questions using both real and synthetic datasets. First, we discuss the experimental methodology, and then we describe the data and results that demonstrate the effectiveness of our framework on crowdsourced entity extraction. The evaluation is performed on an Intel(R) Cored(TM) i7 3.7 GHz 32GB machine; all algorithms are implemented in Python 2.7. 
 
 \vspace{5pt}\noindent\textbf{Gain Estimators:} We evaluate the following gain estimators:
 \squishlist
-\item Chao92Shen: This estimator combines the methodology proposed by Chao~\cite{chao:1992} for estimating the number of unseen species  with Shen's formula, i.e., \Cref{eq:shen}. This estimator was also used by Trushkowsky et al.~\cite{trushkowsky:2013}.
+\item Chao92Shen: This estimator combines the methodology proposed by Chao~\cite{chao:1992} for estimating the number of unseen species  with Shen's formula, i.e., \Cref{eq:shen}.
 \item HwangShen: This estimator combines the regression based approach proposed by Hwang and Shen~\cite{hwang:2010} for estimating the number of unseen species with Shen's formula. 
-\item NewRegr: This estimator corresponds to the new regression based technique proposed in \Cref{sec:newestim}.
+\item NewRegr: This estimator corresponds to our new technique proposed in \Cref{sec:newestim}.
 \squishend
-All estimators were coupled with bootstrapping to estimate their variance to retrieve an upper bound on the return of a query as shown in \Cref{eq:upper}.
+All estimators were coupled with bootstrapping to estimate their variance to retrieve an upper bound on the return of a query as shown in \Cref{sec:balancing}.
 
 \vspace{5pt}\noindent\textbf{Entity Extraction Algorithms:} We evaluate the following algorithms for crowdsourced entity extraction:
 \squishlist
-\item Rand: This algorithm executes random queries until all the available budget is used. It selects a random node from the input poset $\hierarchy$ and a random query configuration $q(k,l)$ from a list of pre-specified $k$, $l$ value combinations. We expect Rand to be effective for extracting entities in small and dense data domains that do not have many sparsely populated nodes.
-\item RandL: This algorithm executes random queries {\em only at the lowest level nodes} (i.e., leaf nodes) of the input poset $\hierarchy$ until all the available budget is used. It selects a random leaf node and a random query configuration $q(k,l)$ from a list of pre-specified $k$, $l$ value combinations. We expect RandL to be effective for {\em shallow} data domains when the majority of nodes corresponds to leaf nodes. And similar to Rand, the performance of RandL is expected to be reasonable for small and dense data domains without sparsely populated nodes.
-\item BFS: This algorithm performs a breadth-first traversal of the input poset $\hierarchy$, executing one query at each node. The query configuration is randomly selected from a list of pre-specified $k$, $l$ value combinations. This algorithm promotes exploration of the action space when extracting entities. It also takes into account the structure of the input domain but is agnostic to sparsely populated nodes of the input $\hierarchy$.
-\item RootChao: This algorithm corresponds to the entity extraction scheme proposed by Trushkowsky et al.~\cite{trushkowsky:2013} that utilizes the Chao92Shen estimator to measure the gain of an additional query. The proposed scheme focuses on queries that are agnostic to the structure of the input entity domain, and thus, correspond to extracting entities only by issuing queries at the root node of the poset $\hierarchy$. Since the authors only propose only a pay-as-you-go scheme that is agnostic to budget constraints, we coupled this algorithm with Algorithm~\ref{algo:overall} to optimize for the input budget constraint. We allowed the algorithm to consider queries of different sizes and different exclude lists but restricted the possible queries to the root node of the input poset.
+\item Rand: This algorithm executes random queries until all the available budget is used. It selects a random node from the input poset $\hierarchy$ and a random query configuration $q(k,l)$ from a list of pre-specified $k$, $l$ value combinations. \iftr We expect Rand to be effective for extracting entities in small and dense data domains that do not have many sparsely populated nodes. \fi
+\item RandL: Same as Rand but only executes queries {\em only at the lowest level nodes} (i.e., leaf nodes) of the input poset $\hierarchy$ until all the available budget is used.  \iftr We expect RandL to be effective for {\em shallow} data domains when the majority of nodes corresponds to leaf nodes. Like Rand, the performance of RandL is expected to be reasonable for small and dense data domains without sparsely populated nodes.\fi
+\item BFS: This algorithm performs a breadth-first traversal of the input poset $\hierarchy$, executing one query at each node. The query configuration is randomly selected from a list of pre-specified $k$, $l$ value combinations. This algorithm promotes exploration of the action space when extracting entities. \iftr It also takes into account the structure of the input domain but is agnostic to sparsely populated nodes of the input $\hierarchy$. \fi
+\item RootChao: This algorithm corresponds to the entity extraction scheme of Trushkowsky et al.~\cite{trushkowsky:2013} that utilizes the Chao92Shen estimator to measure the gain of an additional query. The proposed scheme is agnostic to the structure of the input entity domain, and thus, equivalent to issuing queries only at the root node of the poset $\hierarchy$. Since the authors only propose a pay-as-you-go scheme, we coupled this algorithm with Alg.~\ref{algo:overall} to optimize for the input budget constraint. We allowed the algorithm to consider different query configurations $q(k,l)$ but restricted the possible queries to the root node.
 \item GSChao, GSHWang, GSNewR: These algorithms correspond to our proposed querying policy algorithm (\Cref{sec:heuristic}) coupled with Chao92Shen, HwangShen and NewRegr respectively.
 \item GSExact: This algorithm is used as a near-optimal, omniscient baseline that allows us to see how far off our algorithms are from an algorithm with perfect information. In particular, we combine the algorithm proposed in \Cref{sec:heuristic} with an exact computation of the return or gains from queries. More precisely, the algorithm proceeds as follows: At each round we speculatively execute each of the available actions (i.e., all query configurations across all nodes) and select the one that results in the largest number of return to cost ratio. Since the return of each query is known, the algorithm is not coupled with any of the aforementioned estimators.
 \squishend
@@ -70,6 +70,7 @@ The poor performance of Rand and RandL is due to the sparsity of the Eventbrite 
 
 RootChao corresponds to the scheme proposed by Trushkowsky et al.~\cite{trushkowsky:2013}. Recall that the authors only proposed a pay-as-you-go scheme and not a scheme that optimizes for a given budget. To fully understand how RootChao compares to GSChao, GSHwang and GSNewR under a pay-as-you-go scheme we analyze the traces of the gain and cost achieved by each approach after each ``next-query" decision. In \Cref{fig:payasyougo} we plot the achieved gain versus the running cost corresponding to a total budget of 80. As shown the gain achieved by RootChao saturates at a faster rate compared to GSChao, GSHwang and GSNewR as the cost increases. More precisely, we see that our techniques can achieve gains similar to RootChao with a cost up to 25\% smaller. Similar behavior was observed for other budgets. We also study the number of total queries needed by the different approaches to reach certain gain levels. The results are shown in \Cref{fig:rounds} for a run corresponding to a budget of 80. As shown RootChao requires almost up to 3x more queries to extract the same number of entities as our proposed techniques. Notice that the number of queries issued affects directly the overall latency of the crowd-extraction process.
 
+\iftr
 \begin{figure}[h]
 	\begin{center}
 	\includegraphics[clip,scale=0.5]{figs/gain_cost.eps}
@@ -78,7 +79,8 @@ RootChao corresponds to the scheme proposed by Trushkowsky et al.~\cite{trushkow
 	\end{center}
 	\vspace{-15pt}
 \end{figure}
-
+\fi
+\iftr
 \begin{figure}[h]
 	\begin{center}
 	\includegraphics[clip,scale=0.5]{figs/gain_rounds.eps}
@@ -87,6 +89,17 @@ RootChao corresponds to the scheme proposed by Trushkowsky et al.~\cite{trushkow
 	\end{center}
 	\vspace{-15pt}
 \end{figure}
+\fi
+\ifpaper
+\begin{figure}[h]
+	\begin{center}
+	\subfigure{\includegraphics[clip,scale=0.32]{figs/gain_cost.eps}\label{fig:payasyougo}}
+	\subfigure{\includegraphics[clip,scale=0.32]{figs/gain_rounds.eps}\label{fig:rounds}}
+	\caption{The number of events extracted by different algorithms for the Eventbrite data domain and the corresponding (a) cost and (b) total number of queries.}
+	\end{center}
+	\vspace{-15pt}
+\end{figure}
+\fi
 
 Finally, we point out that GSNewR that combines the proposed poset traversal algorithm with our new regression-based gain estimator was able to outperform GSChao and GSHwang. To further understand the relative performance of GSChao, GSHwang and GSNewR, we evaluate the performance of the gain estimators described above at predicting the number of new retrieved events for different query configurations. We choose ten random nodes from Eventbrite each containing more than 5,000 events. For each of the nodes and each of the available query parameter configurations $(k,l)$, we execute ten queries of the form ``Give me $k$ items from node $u \in \hierarchy$ that are not included in an exclude list of size $l$". As mentioned in \Cref{sec:excludelist} the exclude list for each query is constructed following a randomized approach. 
 
@@ -155,8 +168,9 @@ USA Today & 593 \\ \hline
 	\vspace{-15pt}
 \end{figure}
 
-We also observe that issuing random extraction queries at the nodes of the poset outperforms BFS for a significant margin as the available budget increases. This behavior is expected in dense small domains where all the available nodes are populated. Notice that this approach corresponds to a querying policy that focuses purely on exploring different queries. However, exploiting previously obtained information and balancing exploration and exploitation of the possible actions (i.e., following the proposed poset traversal algorithm) leads to superior performance. We further notice that GSChao does better than GSNewR in this case, unlike the previous case. This is because the Chao92Shen estimator performs better when the retrieved samples correspond to a larger portion of the underlying population (i.e., when operating under a large budget), as we see below. 
+We also observe that issuing random extraction queries at the nodes of the poset outperforms BFS for a significant margin as the available budget increases. This behavior is expected in dense small domains where all the available nodes are populated. Notice that this approach corresponds to a querying policy that focuses purely on exploring different queries. However, exploiting previously obtained information and balancing exploration and exploitation of the possible actions (i.e., following the proposed poset traversal algorithm) leads to superior performance. We further notice that GSChao does better than GSNewR in this case, unlike the previous case. This is because the Chao92Shen estimator performs better when the retrieved samples correspond to a larger portion of the underlying population (i.e., when operating under a large budget) \ifpaper~\cite{crowdgatherfull}. \fi \iftr as we see below. \fi
 
+\iftr
 Next, we evaluate the performance of the gain estimators. As before, we issue ten queries to different nodes of the input poset for all available query configurations. Since the input poset is small, we issued ten queries over all nodes. For each gain estimator and query configuration, we computed the average relative error, comparing the estimated query return with the actual query return. The results are shown in \Cref{tab:peopleesterror}. Again, we observe that for smaller query sizes the regression technique proposed in this paper offers better gain estimates. However, as the query size increases, and hence, a larger portion of the underlying population is observed Chao92Shen outperforms both regression based techniques. Thus, we are able to explain the performance difference between GSChao and the other two algorithms. Finally, we point out that opposed to the sparse Eventbrite domain, all evaluated techniques present an increased performance gap compared to GSExact for the dense People's domain.
 
 \begin{table}[h]
@@ -178,6 +192,7 @@ Next, we evaluate the performance of the gain estimators. As before, we issue te
 \end{tabular}
 \vspace{-5pt}
 \end{table}
+\fi
 
 We next explore how our different algorithms traverse the poset, and how they use different query configurations. The results reported are averaged over ten runs. We begin by considering how many queries these algorithms issue at various levels of the poset. In Figure~\ref{fig:level}, we plot the different number of queries issued at various levels by our algorithms when the budget is set to 10 and 100 respectively. Given a small budget, we observe that all algorithms prefer issuing queries at higher levels of the poset. Notice that inner nodes of the poset are preferred and only a small number of queries is issued at the root (i.e., level one) of the poset. This behavior is justified if we consider that due to their popularity, certain entities are repeatedly extracted, thus leading to a lower gain. As the budget increases, we see that all algorithms tend to consider more specialized queries at deeper levels of the poset. It is interesting to observe that all of our algorithms issue the majority of their queries at the level two nodes, while GSExact, which has perfect information, focuses mostly on the leaf nodes. Thus, in this case, our techniques could benefit from being more aggressive at traversing the poset and reaching deeper levels; overall, our techniques may end up being more conservative in order to cater to a larger space of posets and popularity distributions. In Figure~\ref{fig:queryconf}, we plot the different query configurations chosen by our algorithms when the budget is set to 10 and 100 respectively. We observe that GSExact always prefers queries with $k = 20$ and $l = 0$ for both small and large budgets. On the other hand, our algorithms issue more queries of smaller size when operating under a limited budget and prefer queries of larger size for larger budgets. Out of all algorithms we see that GSNewR was the only one issuing queries with exclude lists of different sizes, thus exploiting the rich diversity of query interfaces. However, the number of such queries is limited. 
 
