@@ -45,7 +45,7 @@ The cost of a query should be significantly increased when an exclude list is us
 First, we evaluate the proposed framework on extracting entities from a large domain. We consider the event dataset collected from Eventbrite. As described in \Cref{sec:intro}, the poset corresponding to the Eventbrite domain contains 8,508,160 nodes with 57,805 distinct events overall. However, only 175,068 nodes are populated leading to an rather sparsely populated domain. Due to lack of popularity proxies for the extracted events, we assigned a random {\em popularity value} in $(0,10]$ to each event. These weights are used during sampling to form the actual popularity distribution characterizing the population of each node in the poset. 
 
 \noindent\textbf{Results:}  We evaluate the performance, in terms of number of entities extracted, for the different extraction algorithms described above, across a range of different budgets. We run each algorithm ten times and report the average number of unique events extracted as well as the corresponding standard error. The results are shown in \Cref{fig:ebextraction}. As can be seen, all of our proposed algorithms, i.e., GSChao, GSHwang, GSNewR outperform the baselines under consideration exhibiting an improvement of at least 2X on the total number of unique events extracted for naive baselines (i.e., Rand, RandL and BFS) and about 30\% for RootChao. For example, for budget = \$50, all schemes coupled with our querying policy discovery algorithm (\Cref{sec:solving}) extracted more than 600 events while Rand and RandL extracted 1.1 and 0.2 events and BFS extracted 207.7 events, an improvement of over 180\%. Moreover, we see that our proposed techniques which exploit the structure of the domain were capable to extract more entities compared to RootChao that issues queries only at the root node of the input hierarchy. The improvement on extracted entities increases rapidly as available budget increases. This behavior is to be expected as issuing queries only at the root fails to extract entities from the tail of the popularity distribution. On the other hand our techniques are capable of exploiting the structure of the input domain to focus on less popular subpopulations thus extracting more entities under the same budget. Finally, we observe that for smaller budgets our proposed techniques perform comparably to GSExact that has ``perfect information'' to the gain of each query, typically demonstrating a performance gap of less than 10\%. For larger budgets this gap increases to 20\%. Note that our estimators have access to few samples and sparse information; the fact that we are able to get this close to GSExact is notable.
-
+\iftr
 \begin{figure}[h]
 	\begin{center}
 	\includegraphics[clip,scale=0.5]{figs/ebExtractionAll.eps}
@@ -54,19 +54,20 @@ First, we evaluate the proposed framework on extracting entities from a large do
 	\end{center}
 	\vspace{-15pt}
 \end{figure}
+\fi
 
-%\ifpaper
-%\begin{figure}[h]
-%\begin{center}
-%        \subfigure{\includegraphics[clip,scale=0.32]{figs/ebExtractionAll.eps} \label{fig:ebextraction}}
-%        \subfigure{\includegraphics[clip,scale=0.32]{figs/poExtraction.eps} \label{fig:poextraction}}
-%\end{center}
-%\vspace{-10pt}
-%\caption{The number of entities extracted by different algorithms for (a) the Eventbrite data domain and (b) for the People's domain under different budgets. }
-%\label{fig:resultsextr}
-%\vspace{-10pt}
-%\end{figure}
-%\fi
+\ifpaper
+\begin{figure}[h]
+\begin{center}
+        \subfigure{\includegraphics[clip,scale=0.32]{figs/ebExtractionAll.eps} \label{fig:ebextraction}}
+        \subfigure{\includegraphics[clip,scale=0.32]{figs/poExtraction.eps} \label{fig:poextraction}}
+\end{center}
+\vspace{-10pt}
+\caption{The number of entities extracted by different algorithms for (a) the Eventbrite data domain and (b) for the People's domain under different budgets. }
+\label{fig:resultsextr}
+\vspace{-10pt}
+\end{figure}
+\fi
 The poor performance of Rand and RandL is due to the sparsity of the Eventbrite data domain. We see that BFS exhibits better performance than Rand and RandL by exploiting the structure of the underlying domain. However, since BFS is agnostic to the cost of the issued queries as well as to sparsely populated areas of the underlying poset, it can only extract a limited number of events. RootChao exhibits significantly better performance than Rand, RandL and BFS as it optimizes for the cost of the issued queries. However, it still performs poorly compared to our proposed techniques that extract significantly more tuples as they both exploit the structure of the poset and optimize for the cost.
 
 RootChao corresponds to the scheme proposed by Trushkowsky et al.~\cite{trushkowsky:2013}. Recall that the authors only proposed a pay-as-you-go scheme and not a scheme that optimizes for a given budget. To fully understand how RootChao compares to GSChao, GSHwang and GSNewR under a pay-as-you-go scheme we analyze the traces of the gain and cost achieved by each approach after each ``next-query'' decision. In \Cref{fig:payasyougo} we plot the achieved gain versus the running cost for a total budget of 80. As shown the gain achieved by RootChao saturates at a faster rate compared to GSChao, GSHwang and GSNewR as the cost increases. More precisely, we see that our techniques can achieve gains similar to RootChao with a cost up to 25\% smaller. Similar behavior was observed for other budgets. We also study the number of total queries needed by the different approaches to reach certain gain levels. The results are shown in \Cref{fig:rounds} for a run corresponding to a budget of 80. As shown RootChao requires almost up to 3x more queries to extract the same number of entities as our proposed techniques. Notice that the number of queries issued affects directly the overall latency of the crowd-extraction process.
@@ -159,6 +160,7 @@ USA Today & 593 \\ \hline
 
 \vspace{5pt}\noindent\textbf{Results}: We first evaluate the performance of the different extraction algorithms. Similarly to Eventbrite we run each algorithm ten times and report the average performance. The results are shown in \Cref{fig:poextraction}. As shown our proposed techniques (i.e., GSChao, GSHwang and GSNewR) still outperform all baselines. Regarding the naive baselines, Rand, RandL and BFS we see that the performance improvement is smaller compared to Eventbrite. The reason is that the input domain is dense and all nodes of the input poset are populated, so even random techniques may ``get lucky'' fairly often. Even so, the number of nodes extracted by all our proposed techniques is typically 100\% greater than that of the naive techniques for small budgets and 54\% for larger ones. On the other hand we see that RootChao performs rather poorly and the performance gap between our techniques and RootChao is significant. Moreover, RootChao performs poorly even compared to the naive baselines. The reason is that the number of extracted entities by RootChao saturates quickly due to the skew of the underlying popularity distribution. As this algorithm does not exploit the structure of the domain it does not extract unpopular entities.
 
+\iftr
 \begin{figure}[h]
 	\vspace{-10pt}
 	\begin{center}
@@ -168,6 +170,7 @@ USA Today & 593 \\ \hline
 	\end{center}
 	\vspace{-15pt}
 \end{figure}
+\fi
 
 We also observe that Rand and RandL outperform BFS for a significant margin as the available budget increases. This behavior is expected in dense small domains where all the available nodes are populated. Notice that this approach corresponds to a querying policy that focuses purely on exploring different queries. However, exploiting previously obtained information and balancing exploration and exploitation of the possible actions (i.e., following the proposed poset traversal algorithm) leads to superior performance. We further notice that GSChao does better than GSNewR in this case, unlike the previous case. This is because the Chao92Shen estimator performs better when the retrieved samples correspond to a larger portion of the underlying population (i.e., when operating under a large budget) \ifpaper~\cite{crowdgatherfull}. \fi \iftr as we see below. \fi
 
