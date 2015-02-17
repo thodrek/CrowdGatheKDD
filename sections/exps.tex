@@ -55,17 +55,18 @@ First, we evaluate the proposed framework on extracting entities from a large do
 	\vspace{-15pt}
 \end{figure}
 
-%\begin{figure*}[ht]
+%\ifpaper
+%\begin{figure}[h]
 %\begin{center}
-%        \subfigure{\includegraphics[clip,scale=0.5]{figs/ebExtraction.eps} \label{fig:ebextractiona}}
-%        \subfigure{\includegraphics[clip,scale=0.5]{figs/ebExtractionGS.eps} \label{fig:ebextractiona}}
+%        \subfigure{\includegraphics[clip,scale=0.32]{figs/ebExtractionAll.eps} \label{fig:ebextraction}}
+%        \subfigure{\includegraphics[clip,scale=0.32]{figs/poExtraction.eps} \label{fig:poextraction}}
 %\end{center}
 %\vspace{-10pt}
-%\caption{The number of events extracted by different algorithms for the Eventbrite data domain and different budgets.}
-%\label{fig:ebextraction}
+%\caption{The number of entities extracted by different algorithms for (a) the Eventbrite data domain and (b) for the People's domain under different budgets. }
+%\label{fig:resultsextr}
 %\vspace{-10pt}
-%\end{figure*}
-
+%\end{figure}
+%\fi
 The poor performance of Rand and RandL is due to the sparsity of the Eventbrite data domain. Regarding BFS, we see that it exhibits better performance than Rand and RandL by exploiting the structure of the underlying domain. However, since BFS is agnostic to the cost of the issued queries as well as to sparsely populated areas of the underlying poset, it can only extract a limited number of events. RootChao exhibits significantly better performance than Rand, RandL and BFS as it optimizes for the cost of the issued queries. However, it still performs poorly compared to our proposed techniques that extract significantly more tuples as they both exploit the structure of the poset and optimize for the cost of the issued queries. 
 
 RootChao corresponds to the scheme proposed by Trushkowsky et al.~\cite{trushkowsky:2013}. Recall that the authors only proposed a pay-as-you-go scheme and not a scheme that optimizes for a given budget. To fully understand how RootChao compares to GSChao, GSHwang and GSNewR under a pay-as-you-go scheme we analyze the traces of the gain and cost achieved by each approach after each ``next-query" decision. In \Cref{fig:payasyougo} we plot the achieved gain versus the running cost corresponding to a total budget of 80. As shown the gain achieved by RootChao saturates at a faster rate compared to GSChao, GSHwang and GSNewR as the cost increases. More precisely, we see that our techniques can achieve gains similar to RootChao with a cost up to 25\% smaller. Similar behavior was observed for other budgets. We also study the number of total queries needed by the different approaches to reach certain gain levels. The results are shown in \Cref{fig:rounds} for a run corresponding to a budget of 80. As shown RootChao requires almost up to 3x more queries to extract the same number of entities as our proposed techniques. Notice that the number of queries issued affects directly the overall latency of the crowd-extraction process.
@@ -213,7 +214,7 @@ We next explore how our different algorithms traverse the poset, and how they us
 	\hspace{-10pt}
 	\includegraphics[clip,scale=0.32]{figs/queryConfBudget100.eps}
 	\vspace{-10pt}
-	\caption{The different query configurations used when budget is set at 10 or 100.}\label{fig:queryconf}
+	\caption{The query configurations used when budget is set at 10 or 100.}\label{fig:queryconf}
 	\vspace{-15pt}
 \end{figure}
 
