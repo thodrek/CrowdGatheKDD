@@ -8,6 +8,7 @@ We present an empirical evaluation of our proposed algorithmic framework using b
 \subsection{Experimental Setup}
 \label{sec:expsetup}
 We first provide a description of our experimental setup.
+
 \vspace{2pt}\noindent\textbf{Gain Estimators:} We evaluate the following gain estimators:
 \squishlist
 \item Chao92Shen: This estimator combines the methodology proposed by Chao~\cite{chao:1992} for estimating the number of unseen species  with Shen's formula, i.e., \Cref{eq:shen}.
@@ -18,21 +19,21 @@ All estimators were coupled with bootstrapping to estimate their variance to ret
 
 \vspace{2pt}\noindent\textbf{Entity Extraction Algorithms:} We evaluate the following algorithms for crowdsourced entity extraction:
 \squishlist
-\item Rand: This algorithm executes random queries until all the available budget is used. It selects a random node from the input poset $\hierarchy$ and a random query configuration $q(k,l)$ from a list of pre-specified $k$, $l$ value combinations. \iftr We expect Rand to be effective for extracting entities in small and dense data domains that do not have many sparsely populated nodes. \fi
+\item Rand: This algorithm executes random queries until all the available budget is used. It selects a random node from the input poset $\hierarchy$ and a random query configuration $(k,l)$ from a list of pre-specified $k$, $l$ value combinations. \iftr We expect Rand to be effective for extracting entities in small and dense data domains that do not have many sparsely populated nodes. \fi
 \item RandL: Same as Rand but only executes queries {\em only at the lowest level nodes} (i.e., leaf nodes) of the input poset $\hierarchy$ until all the available budget is used.  \iftr We expect RandL to be effective for {\em shallow} data domains when the majority of nodes corresponds to leaf nodes. Like Rand, the performance of RandL is expected to be reasonable for small and dense data domains without sparsely populated nodes.\fi
 \item BFS: This algorithm performs a breadth-first traversal of the input poset $\hierarchy$, executing one query at each node. The query configuration is randomly selected from a list of pre-specified $k$, $l$ value combinations. This algorithm promotes exploration of the action space when extracting entities. \iftr It also takes into account the structure of the input domain but is agnostic to sparsely populated nodes of the input $\hierarchy$. \fi
-\item RootChao: This algorithm corresponds to the entity extraction scheme of Trushkowsky et al.~\cite{trushkowsky:2013} that utilizes the Chao92Shen estimator to measure the gain of an additional query. The proposed scheme is agnostic to the structure of the input entity domain, and thus, equivalent to issuing queries only at the root node of the poset $\hierarchy$. Since the authors only propose a pay-as-you-go scheme, we coupled this algorithm with Alg.~\ref{algo:overall} to optimize for the input budget constraint. We allowed the algorithm to consider different query configurations $q(k,l)$ but restricted the possible queries to the root node.
+\item RootChao: This algorithm corresponds to the entity extraction scheme of Trushkowsky et al.~\cite{trushkowsky:2013} that utilizes the Chao92Shen estimator to measure the gain of an additional query. The proposed scheme is agnostic to the structure of the input entity domain, and thus, equivalent to issuing queries only at the root node of the poset $\hierarchy$. Since the authors only propose a pay-as-you-go scheme, we coupled this algorithm with Alg.~\ref{algo:overall} to optimize for the input budget constraint. We allowed the algorithm to consider different query configurations $(k,l)$ but restricted the possible queries to the root node.
 \item GSChao, GSHWang, GSNewR: These algorithms correspond to our proposed querying policy algorithm (\Cref{sec:heuristic}) coupled with Chao92Shen, HwangShen and NewRegr respectively.
 \item GSExact: This algorithm is used as a near-optimal, omniscient baseline that allows us to see how far off our algorithms are from an algorithm with perfect information. In particular, we combine the algorithm proposed in \Cref{sec:heuristic} with an exact computation of the return or gains from queries. More precisely, the algorithm proceeds as follows: At each round we speculatively execute each of the available actions (i.e., all query configurations across all nodes) and select the one that results in the largest number of return to cost ratio. Since the return of each query is known, the algorithm is not coupled with any of the aforementioned estimators.
 \squishend
 
 Rand, RandL and BFS promote the exploration of the action space when extracting entities, while the other algorithms balance exploration with exploitation. For the results reported below, we run each algorithm ten times and report the average gain achieved under the given budget.
 
-\vspace{2pt}\noindent\textbf{Querying Interface:} For all datasets we consider generalized queries $q(k,l)$ of the type ``Give me $k$ more entities that satisfy certain conditions and are not present in an exclude list of size $l$''. The conditions correspond to matching the attribute values associated with a node from the input poset. The  configurations considered for $(k,l)$ are $\{(5,0), (10,0), (20,0), (5,2), (10,5), (20,5), (20,10)\}$. Larger values of $k$ or $l$ were deemed unreasonable for crowdsourced queries. The gain of a query is computed as the number of new entities extracted. The cost of each query is computed using an additive model comprised by three partial cost terms that depend on the characteristics of the query. 
+\vspace{2pt}\noindent\textbf{Querying Interface:} For all datasets we consider generalized queries of the type ``Give me $k$ more entities that satisfy certain conditions and are not present in an exclude list of size $l$''. The conditions correspond to matching the attribute values associated with a node from the input poset. The  configurations considered for $(k,l)$ are $\{(5,0), (10,0), (20,0), (5,2), (10,5), (20,5), (20,10)\}$. Larger values of $k$ or $l$ were deemed unreasonable for crowdsourced queries. The gain of a query is computed as the number of new entities extracted. The cost of each query is computed using an additive model comprised by three partial cost terms that depend on the characteristics of the query. 
 
 The three partial cost terms are: (i) {\sf CostK} that depends on the number of responses $k$ requested from a user, (ii) {\sf CostL} that depends on the size of the exclude list $l$ used in the query, and (iii) {\sf CostSpec} that depends on the {\em specificity} of the query $q_s$, e.g., we assume that queries that require users to provide more specialized entities such as a ``Give me one concert for New York on the 17th of Nov'' cost more than more generic queries such as ``Give me one concert in New York''. More formally, we define the specificity of a query to be equal to the number on attributes assigned non-wildcard values for the node $u \in \hierarchy$ the query corresponds to. 
 
-For each of the cost terms we assume a maximum cost of \$1 realized by considering the maximum value of the corresponding input variable. The overall cost for a query $q(k,l)$ with specificity $s$ is computed as:
+For each of the cost terms we assume a maximum cost of \$1 realized by considering the maximum value of the corresponding input variable. The overall cost for a query with configuration $(k,l)$ with specificity $s$ is computed as:
 
 {\small
 \begin{equation}
@@ -80,18 +81,6 @@ When comparing again the naive baselines Rand, RandL, and BFS, we see that GSCha
 
 Comparing against RootChao, we see that GSChao, GSHwang and GSNewR, are capable to retrieve up to 30\% more entities for Eventbrite and 5X for the People's domain. This performance difference is due to the fact that the gain achieved by RootChao saturates at a faster rate compared to GSChao, GSHwang and GSNewR as the cost increases. This is because of the fact that RootChao focuses on issuing queries at the root of the input poset, and hence, it is not able to extract entities belonging to the long tail of the popularity distribution. Moreover, for the People's domain we see that RootChao performs poorly even compared to the naive baselines Rand, RandL and BFS. Again, this behavior is due to the skew of the underlying popularity distribution.
 
-\iftr
-\begin{figure}[h]
-	\begin{center}
-	\includegraphics[clip,scale=0.5]{figs/ebExtractionAll.eps}
-	\caption{The number of events extracted by different algorithms for the Eventbrite data domain and different budgets.}
-	\label{fig:ebextraction}
-	\end{center}
-	\vspace{-15pt}
-\end{figure}
-\fi
-
-\ifpaper
 \begin{figure}[h]
 \begin{center}
         \subfigure{\includegraphics[trim=120 0 0 0,scale=0.40]{figs/ebExtractionNotOpt.eps} \label{fig:ebextraction}}
@@ -103,14 +92,10 @@ Comparing against RootChao, we see that GSChao, GSHwang and GSNewR, are capable 
 \label{fig:resultsextr}
 \vspace{-15pt}
 \end{figure}
-\fi
 
 \vspace{2pt}\noindent{\textbf{How do our techniques compare against a near-optimal policy discovery algorithm?}}
 Next, we evaluate GSChao, GSHwang and GSNewR against the near-optimal querying policy discovery algorithm GSExact. The results for Eventbrite and the People's domain are shown in \Cref{fig:ebextractionopt} and \Cref{fig:poextractionopt} respectively. Regarding the dense domain Eventbrite, we observe that for smaller budgets our proposed techniques perform comparably to GSExact that has ``perfect information'' to the gain of each query, typically demonstrating a performance gap of less than 10\%. For larger budgets this gap increases to 25\%. Note that our estimators have access to few samples and sparse information; the fact that we are able to get this close to GSExact is notable. Finally, for the People's domain, our techniques present an increased performance gap compared to GSExact. Nevertheless the performance drop is at most 50\%. 
 
-
-
-\ifpaper
 \begin{figure}[h]
 \vspace{-10pt}
 \begin{center}
@@ -123,7 +108,6 @@ Next, we evaluate GSChao, GSHwang and GSNewR against the near-optimal querying p
 \label{fig:resultsextr}
 \vspace{-10pt}
 \end{figure}
-\fi
 
 \vspace{2pt}\noindent{\textbf{How do the different techniques compare with respect to the total number of queries issued during extraction?}}
 We compare the performance of RootChao (i.e., the extraction scheme proposed by Trushkowsky et al.~\cite{trushkowsky:2013}) against our algorithms GSChao, GSHwang and GSNewR with respect to the {\em total number of queries issued during extraction}. Notice that this new evaluation metric characterizes directly the overall latency of the crowd-extraction process. \Cref{fig:rounds} shows the corresponding results for a run for Eventbrite and a budget of \$80. As shown {\em RootChao requires almost up to 3x more queries} to extract the same number of entities as our proposed techniques, thus, exhibiting significantly larger latency compared to GSChao, GSHwang and GSNewR.
