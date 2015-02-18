@@ -1,4 +1,4 @@
-set ter postscript enhanced color eps "Helvetica" 22
+set ter postscript enhanced color eps "Helvetica" 30
 set output "gain_rounds.eps"
 set boxwidth 2 absolute
 set title "{/Helvetica-Bold Total Gain vs. Number of Queries"

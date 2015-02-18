@@ -47,7 +47,7 @@ We further evaluate the performance of the extraction algorithms for a more dens
 
 \begin{table}
 \scriptsize\center
-\caption{The population characteristics for the People's data.}
+\caption{The population characteristics for the People's domain.}
 \label{tab:ptypedata}
 \begin{tabular}{|c|c|}
 \hline
@@ -94,28 +94,31 @@ Comparing against RootChao, we see that GSChao, GSHwang and GSNewR, are capable 
 \ifpaper
 \begin{figure}[h]
 \begin{center}
-        \subfigure{\includegraphics[clip,scale=0.32]{figs/ebExtractionNotOpt.eps} \label{fig:ebextraction}}
-        \subfigure{\includegraphics[clip,scale=0.32]{figs/poExtractionNotOpt.eps} \label{fig:poextraction}}
+        \subfigure{\includegraphics[trim=120 0 0 0,scale=0.40]{figs/ebExtractionNotOpt.eps} \label{fig:ebextraction}}
+        \subfigure{\includegraphics[trim=80 0 100 0,scale=0.40]{figs/poExtractionNotOpt.eps} \label{fig:poextraction}}
+        \subfigure{\includegraphics[scale=0.30]{figs/notoptlegend.pdf}}
 \end{center}
-\vspace{-10pt}
+\vspace{-20pt}
 \caption{A comparison of the proposed entity extraction techniques against several baselines for (a) Eventbrite and (b) the People's domain.}
 \label{fig:resultsextr}
-\vspace{-10pt}
+\vspace{-15pt}
 \end{figure}
 \fi
 
 \vspace{2pt}\noindent{\textbf{How do our techniques compare against a near-optimal policy discovery algorithm?}}
-Next, we evaluate GSChao, GSHwang and GSNewR against the near-optimal querying policy discovery algorithm GSExact. The results for Eventbrite and the People's domain are shown in \Cref{fig:ebextractionopt} and \Cref{fig:poextractionopt} respectively. Regarding the dense domain Eventbrite, we observe that for smaller budgets our proposed techniques perform comparably to GSExact that has ``perfect information'' to the gain of each query, typically demonstrating a performance gap of less than 10\%. For larger budgets this gap increases to 20\%. Note that our estimators have access to few samples and sparse information; the fact that we are able to get this close to GSExact is notable. Finally, for the People's domain, our techniques present an increased performance gap compared to GSExact. Nevertheless the performance drop is at most 50\%. 
+Next, we evaluate GSChao, GSHwang and GSNewR against the near-optimal querying policy discovery algorithm GSExact. The results for Eventbrite and the People's domain are shown in \Cref{fig:ebextractionopt} and \Cref{fig:poextractionopt} respectively. Regarding the dense domain Eventbrite, we observe that for smaller budgets our proposed techniques perform comparably to GSExact that has ``perfect information'' to the gain of each query, typically demonstrating a performance gap of less than 10\%. For larger budgets this gap increases to 25\%. Note that our estimators have access to few samples and sparse information; the fact that we are able to get this close to GSExact is notable. Finally, for the People's domain, our techniques present an increased performance gap compared to GSExact. Nevertheless the performance drop is at most 50\%. 
 
 
 
 \ifpaper
 \begin{figure}[h]
-\begin{center}
-        \subfigure{\includegraphics[clip,scale=0.32]{figs/ebExtractionOpt.eps} \label{fig:ebextractionopt}}
-        \subfigure{\includegraphics[clip,scale=0.32]{figs/poExtractionOpt.eps} \label{fig:poextractionopt}}
-\end{center}
 \vspace{-10pt}
+\begin{center}
+        \subfigure{\includegraphics[trim=120 0 0 0,scale=0.40]{figs/ebExtractionOpt.eps} \label{fig:ebextractionopt}}
+        \subfigure{\includegraphics[trim=80 0 100 0,scale=0.40]{figs/poExtractionOpt.eps} \label{fig:poextractionopt}}
+        \subfigure{\includegraphics[scale=0.30]{figs/optlegend.pdf}}
+\end{center}
+\vspace{-20pt}
 \caption{A comparison of the proposed entity extraction techniques against a near-optimal algorithm for (a) Eventbrite and (b) the People's domain.}
 \label{fig:resultsextr}
 \vspace{-10pt}
@@ -126,12 +129,13 @@ Next, we evaluate GSChao, GSHwang and GSNewR against the near-optimal querying p
 We compare the performance of RootChao (i.e., the extraction scheme proposed by Trushkowsky et al.~\cite{trushkowsky:2013}) against our algorithms GSChao, GSHwang and GSNewR with respect to the {\em total number of queries issued during extraction}. Notice that this new evaluation metric characterizes directly the overall latency of the crowd-extraction process. \Cref{fig:rounds} shows the corresponding results for a run for Eventbrite and a budget of \$80. As shown {\em RootChao requires almost up to 3x more queries} to extract the same number of entities as our proposed techniques, thus, exhibiting significantly larger latency compared to GSChao, GSHwang and GSNewR.
 
 \begin{figure}[h]
+	\vspace{-10pt}
 	\begin{center}
 	\includegraphics[clip,scale=0.4]{figs/gain_rounds.eps}
 	\caption{The number of events extracted by different algorithms for the Eventbrite data domain and the corresponding total number of queries.}
 	\label{fig:rounds}
 	\end{center}
-	\vspace{-15pt}
+	\vspace{-20pt}
 \end{figure}
 
 \vspace{2pt}\noindent{\textbf{How our different algorithms traverse the poset and use different query configurations?}}

@@ -1,15 +1,18 @@
 set ter postscript enhanced color eps "Helvetica" 30
 set output "poExtractionNotOpt.eps"
 set boxwidth 0.9 absolute
-set title "{/Helvetica-Bold Extraction Performance for People Data"
+set size square
+set title "{/Helvetica-Bold Extraction Performance - People's Domain"
 set xlabel  "Budget"
 set ylabel  "Extracted People"
 set datafile missing "-"
-set key outside bottom center horizontal
+#set key outside bottom center horizontal
+#set key outside right 
+set nokey
 set grid x y
 set xtics (0,10,20,50,80,100)
 set ytics (0,75,150, 250, 350)
-set xrange [0:105]
+set xrange [10:105]
 set yrange [0:350]
 set tics out
 plot "poExtraction.txt" using 1:2:3 with linespoints ls 1 pt 6 ps 3 lw 4 lt 1 lc 1 title "Rand", \

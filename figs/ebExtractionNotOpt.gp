@@ -1,11 +1,13 @@
 set ter postscript enhanced color eps "Helvetica" 30
 set output "ebExtractionNotOpt.eps"
 set boxwidth 2 absolute
-set title "{/Helvetica-Bold Extraction Performance for Eventbrite"
+set size square
+set title "{/Helvetica-Bold Extraction Performance - Eventbrite"
 set xlabel  "Budget"
 set ylabel  "Extracted Events"
 set datafile missing "-"
-set key outside bottom center horizontal
+#set key outside bottom center horizontal
+set nokey
 set grid x y
 set xtics (10,20,50,80,100)
 set ytics (0,400,800,1300)
