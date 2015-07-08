@@ -20,7 +20,7 @@
 \usepackage{epstopdf}
 \usepackage{cleveref}
 \usepackage{soul}
-\usepackage[font={small,it}]{caption}
+%\usepackage[font={small,it}]{caption}
 
 \newcommand{\squishlist}{
    \begin{list}{$\bullet$}
@@ -38,9 +38,9 @@
 
 \renewcommand*\ttdefault{cmvtt}
 
-\makeatletter
-\def\@copyrightspace{\relax}
-\makeatother
+%\makeatletter
+%\def\@copyrightspace{\relax}
+%\makeatother
 
 
 \newcommand{\argmax}{\operatornamewithlimits{arg\ max}}
@@ -80,31 +80,37 @@
 
 % ****************** TITLE ****************************************
 
-\title{CrowdGather: Entity Extraction over Structured Domains}
-
+%\title{CrowdGather: Entity Extraction over Structured Domains}
+\title{Crowdsourced Data Extraction from the Long Tail}
 \numberofauthors{3} 
 
-\author{
-	\alignauthor Theodoros Rekatsinas\\
-            \affaddr{University of Maryland, College Park} 
-                \email{thodrek@cs.umd.edu}
-            \alignauthor Amol Deshpande\\
-            \affaddr{University of Maryland, College Park} 
-                \email{amol@cs.umd.edu}
-            \alignauthor Aditya Parameswaran \\
-            \affaddr{University of Illinois, Urbana-Champaign} 
-                \email{adityagp@illinois.edu}
-}
+%\author{
+%	\alignauthor Theodoros Rekatsinas\\
+%            \affaddr{University of Maryland, College Park} 
+%                \email{thodrek@cs.umd.edu}
+%            \alignauthor Amol Deshpande\\
+%            \affaddr{University of Maryland, College Park} 
+%                \email{amol@cs.umd.edu}
+%            \alignauthor Aditya Parameswaran \\
+%            \affaddr{University of Illinois, Urbana-Champaign} 
+%                \email{adityagp@illinois.edu}
+%}
 
 \maketitle
 
-\begin{abstract}
-Crowdsourced entity extraction is often used to acquire data for many applications, including recommendation systems, construction of aggregated listings and directories, and knowledge base construction. Current solutions focus on entity extraction using a single query, e.g., only using ``give me another restaurant'', when assembling a list of all restaurants. Due to the cost of human labor, solutions that focus on a single query can be highly impractical.
+%\begin{abstract}
+%Crowdsourced entity extraction is often used to acquire data for many applications, including recommendation systems, construction of aggregated listings and directories, and knowledge base construction. Current solutions focus on entity extraction using a single query, e.g., only using ``give me another restaurant'', when assembling a list of all restaurants. Due to the cost of human labor, solutions that focus on a single query can be highly impractical.
+%
+%In this paper, we leverage the fact that entity extraction often focuses on {\em structured domains}, i.e., domains that are described by a collection of attributes, each potentially exhibiting hierarchical structure. Given such a domain, we enable a richer space of queries, e.g., ``give me another Moroccan restaurant in Manhattan that does takeout''. Naturally, enabling a richer space of queries comes with a host of issues, especially since many queries return empty answers. We develop new statistical tools that enable us to reason about the gain of issuing {\em additional queries} given little to no information, and show how we can exploit the overlaps across the results of queries for different points of the data domain to obtain accurate estimates of the gain. We cast the problem of {\em budgeted entity extraction} over large domains as an adaptive optimization problem that seeks to maximize the number of extracted entities, while minimizing the overall extraction costs. We evaluate our techniques with experiments on both synthetic and real-world datasets, demonstrating a yield of up to 4X over competing approaches for the same budget.
+%\end{abstract}
 
-In this paper, we leverage the fact that entity extraction often focuses on {\em structured domains}, i.e., domains that are described by a collection of attributes, each potentially exhibiting hierarchical structure. Given such a domain, we enable a richer space of queries, e.g., ``give me another Moroccan restaurant in Manhattan that does takeout''. Naturally, enabling a richer space of queries comes with a host of issues, especially since many queries return empty answers. We develop new statistical tools that enable us to reason about the gain of issuing {\em additional queries} given little to no information, and show how we can exploit the overlaps across the results of queries for different points of the data domain to obtain accurate estimates of the gain. We cast the problem of {\em budgeted entity extraction} over large domains as an adaptive optimization problem that seeks to maximize the number of extracted entities, while minimizing the overall extraction costs. We evaluate our techniques with experiments on both synthetic and real-world datasets, demonstrating a yield of up to 4X over competing approaches for the same budget.
+\begin{abstract}
+Crowdsourced entity extraction is key to collecting fine grained information for many applications, including recommendation systems, listings and directories construction, and knowledge base construction. Current solutions rely on repeatedly issuing fixed queries to workers asking them to list entities satisfying specific predicates, e.g., ``list a {\bf person} in today's NY Times''. This results to duplicate extractions and may significantly limiting the total number of distinct entities extracted. The proposed methods can be impractical when operating under a monetary budget as they overlook the ubiquitous long-tail phenomenon in extraction tasks, i.e., the fact that a small number of popular entities is provided by many workers, leading to increased duplicates, while a large number of not so popular entities is provided only by a small number of workers.
+
+In this paper, we develop CrowdEX,  a crowdsourced data extraction framework that significantly limits duplicate extractions by adaptively updating the predicates of extraction queries to target long tail entities, e.g., it may adapt the initial query to ``list a {\bf Greek politician} in today's NY Times'' to target a more focused entity group. We leverage the fact that entity extraction often focuses on {\em structured domains}, i.e., domains described by a collection of attributes, to allow for richer queries with different predicate combinations. The latter comes with a host of issues, especially since many queries may return empty answers. We develop new statistical tools to reason about the gain, i.e., the number of new distinct extracted entities, of issuing {\em further queries} under the presence of little to no information allowing us to effectively prune futile queries. We also develop algorithms to discover adaptive querying strategies that seek to maximize the number of distinct extracted entities under budget constraints. We evaluate our techniques on both synthetic and real-world datasets, demonstrating a yield of up to 4X over competing approaches for the same budget.
 \end{abstract}
 
-\input{sections/intro}
+\input{sections/intro_new}
 \input{sections/prelims}
 \input{sections/gainestimators}
 \input{sections/solving}
@@ -113,9 +119,9 @@ In this paper, we leverage the fact that entity extraction often focuses on {\em
 \input{sections/conclusions}
 \balance
 
-\ifpaper
-\scriptsize
-\fi
+%\ifpaper
+%\scriptsize
+%\fi
 \bibliographystyle{abbrv}
 \bibliography{crowd_hierarchies}
 
