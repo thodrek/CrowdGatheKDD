@@ -40,7 +40,7 @@ The cost of a query should be significantly increased when an exclude list is us
 We further evaluate the performance of the extraction algorithms for a more dense domain, that we constructed ourselves. We used Amazon's Mechanical Turk~\cite{mturk} to collect a real-world dataset, targeted at extracting ``people in the news''. While different from the event extraction domain studied before this new domain is still structured. We asked workers to extract the names of people belonging to four different types from five different news portals. The people types we considered are ``Politicians'', ``Athletes'', ``Actors/Singers'' and ``Industry People''. The news portals we considered are ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal''. This data domain, referred to as the People's domain, is essentially characterized by the type of the individual and the news portal. Workers were paid \$0.20 per HIT. We issued 20 HITS for each leaf node of the domain's poset, resulting in 600 HITS in total. After manually curating name misspelling's, we extracted 1,245 unique people in total. \Cref{tab:ptypedata} shows the number of distinct entities for the different values of the people-type and news portal attributes. Finally, the popularity value of each extracted entity was assigned to be equal to the number of times it appeared in the extraction result. The values are normalized during sampling time to form a proper popularity distribution. Collecting a large amount of data in advance from Mechanical Turk and then simulating the responses of human workers by revealing portions of this dataset allows us to compare different algorithms on an equal footing; this approach is often adopted in the evaluation of crowdsourcing algorithms~\cite{DBLP:journals/pvldb/ParameswaranBG0PW14, marcus:2011,trushkowsky:2013}.
 
 \begin{table}
-\scriptsize\center
+\center
 \caption{The population characteristics for the People's domain.}
 \label{tab:ptypedata}
 \begin{tabular}{|c|c|}
@@ -61,7 +61,6 @@ NY Times & 595 \\
 HuffPost & 599 \\
 USA Today & 593 \\ \hline
 \end{tabular}
-\vspace{-15pt}
 \end{table}
 
 \subsection{Experimental Results}
@@ -80,23 +79,19 @@ Comparing against RootChao, we see that GSChao, GSHwang and GSNewR, are able to 
         \subfigure{\includegraphics[trim=80 0 100 0,scale=0.40]{figs/poExtractionNotOpt.eps} \label{fig:poextraction}}
         \subfigure{\includegraphics[scale=0.30]{figs/notoptlegend.pdf}}
 \end{center}
-\vspace{-20pt}
 \caption{A comparison of the proposed entity extraction techniques against several baselines for (a) Eventbrite and (b) the People's domain.}
 \label{fig:resultsextr}
-\vspace{-15pt}
 \end{figure}
 
 \vspace{3pt}\noindent{\ul{\textbf{How do our techniques compare against a near-optimal policy discovery algorithm?}}}
 Next, we evaluate GSChao, GSHwang and GSNewR against the near-optimal querying policy discovery algorithm GSExact. The results for Eventbrite and the People's domain are shown in \Cref{fig:ebextractionopt} and \Cref{fig:poextractionopt} respectively. Regarding the dense domain Eventbrite, we observe that for smaller budgets our proposed techniques perform comparably to GSExact that has ``perfect information'' about the gain of each query, typically demonstrating a performance gap of less than 10\%. For larger budgets this gap increases to 25\%. Note that our estimators have access to few samples and sparse information; the fact that we are able to get this close to GSExact is notable. Finally, for the People's domain, our techniques present an increased performance gap compared to GSExact. Nevertheless the performance drop is at most 50\%. 
 
 \begin{figure}[h]
-\vspace{-10pt}
 \begin{center}
         \subfigure{\includegraphics[trim=120 0 0 0,scale=0.40]{figs/ebExtractionOpt.eps} \label{fig:ebextractionopt}}
         \subfigure{\includegraphics[trim=80 0 100 0,scale=0.40]{figs/poExtractionOpt.eps} \label{fig:poextractionopt}}
         \subfigure{\includegraphics[scale=0.30]{figs/optlegend.pdf}}
 \end{center}
-\vspace{-20pt}
 \caption{A comparison of the proposed entity extraction techniques against a near-optimal algorithm for (a) Eventbrite and (b) the People's domain.}
 \label{fig:resultsextr}
 \vspace{-10pt}
@@ -106,13 +101,11 @@ Next, we evaluate GSChao, GSHwang and GSNewR against the near-optimal querying p
 We compare the performance of RootChao (i.e., the extraction scheme proposed by Trushkowsky et al.~\cite{trushkowsky:2013}) against our algorithms GSChao, GSHwang and GSNewR with respect to the {\em total number of queries issued during extraction}. Notice that this new evaluation metric characterizes directly the overall latency of the crowd-extraction process. \Cref{fig:rounds} shows the corresponding results for a run for Eventbrite and a budget of \$80. As shown {\em RootChao requires almost up to 3x more queries} to extract the same number of entities as our proposed techniques, thus, exhibiting significantly larger latency compared to GSChao, GSHwang and GSNewR.
 
 \begin{figure}[h]
-	\vspace{-10pt}
 	\begin{center}
-	\includegraphics[clip,scale=0.4]{figs/gain_rounds.eps}
+	\includegraphics[clip,scale=0.6]{figs/gain_rounds.eps}
 	\caption{The number of events extracted by different algorithms for the Eventbrite data domain and the corresponding total number of queries.}
 	\label{fig:rounds}
 	\end{center}
-	\vspace{-20pt}
 \end{figure}
 
 \vspace{3pt}\noindent{\ul{\textbf{How our different algorithms traverse the poset and use different query configurations?}}}
@@ -120,23 +113,15 @@ We next explore how our different algorithms traverse the poset, and how they us
 
 
 \begin{figure}[h]
-	\vspace{-10pt}
     \includegraphics[clip,scale=0.32]{figs/levelBudget10.eps}
-	\hspace{-10pt}
 	\includegraphics[clip,scale=0.32]{figs/levelBudget100.eps}
-	\vspace{-10pt}
 	\caption{The number of queries issued at different levels used when budget is set at 10 or 100.}\label{fig:level}
-	\vspace{-10pt}
 \end{figure}
 
 \begin{figure}[h]
-	\vspace{-5pt}
    	 \includegraphics[clip,scale=0.32]{figs/queryConfBudget10.eps}
-	\hspace{-10pt}
 	\includegraphics[clip,scale=0.32]{figs/queryConfBudget100.eps}
-	\vspace{-10pt}
 	\caption{The query configurations used when budget is set at 10 or 100.}\label{fig:queryconf}
-	\vspace{-10pt}
 \end{figure}
 
 \vspace{3pt}\noindent{\ul{\textbf{How effective are the different estimators at predicting the gain of additional queries?}}}
@@ -145,7 +130,7 @@ Finally, we point out that GSNewR was able to outperform GSChao and GSHwang for 
 \Cref{tab:eventesterror} reports the relative error for each of the three estimators averaged over all points under consideration for Eventbrite. As shown, all three estimators perform equivalently with the new regression-based technique slightly outperforming Chao92Shen and HwangShen for certain types of queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. We attribute the improved extraction performance of GSNewR to these improved estimates. The relatively large values for relative errors are justified as the retrieved samples correspond to a very small portion of the underlying population for each of the points. This is a well-known behavior for non-parametric estimators and studied extensively in the species estimation literature~\cite{hwang:2010}. 
 
 \begin{table}
-\scriptsize\center
+\small \center
 \caption{Average absolute relative error for estimating the gain of different queries for Eventbrite.}
 \label{tab:eventesterror}
 \begin{tabular}{|c|c|c|c|c|}
@@ -160,16 +145,13 @@ Finally, we point out that GSNewR was able to outperform GSChao and GSHwang for 
 20 & 10 & 0.653 & 0.756 & 0.631\\
 \hline
 \end{tabular}
-\vspace{-10pt}
 \end{table}
 
 \Cref{tab:peopleesterror} shows the results for the People's domain. We observe that for smaller query sizes the regression technique proposed in this paper offers better gain estimates. However, as the query size increases, and hence, a larger portion of the underlying population is observed Chao92Shen outperforms both regression-based techniques. Thus, we are able to explain the performance difference between GSChao and the other two algorithms. Eventually, we have that for sparse domains regression-based techniques result in better performance. However, for dense domains the Chao92Shen estimator results in better performance as a larger portion of the underlying population can be sampled. 
 
 \begin{table}[h]
-\vspace{-5pt}
-\scriptsize \center
+\small \center
 \caption{Average absolute percentage error for estimating the gain of different queries for the People's data domain.}
-\vspace{-5pt}
 \label{tab:peopleesterror}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -183,7 +165,6 @@ Finally, we point out that GSNewR was able to outperform GSChao and GSHwang for 
 20 & 10 & 0.1721 & 0.162 & 0.127\\
 \hline
 \end{tabular}
-\vspace{-15pt}
 \end{table}
 
 
