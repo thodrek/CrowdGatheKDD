@@ -79,12 +79,29 @@ The situation only becomes worse when entities follow a skewed, long tail {\em p
 First, we consider Eventbrite~(\url{www.eventbrite.com}), an online event aggregator, that relies on crowdsourcing to compile a directory of events with detailed information about the location, type, date and category of each event. We collected a dataset via Eventbrite's API with events of 19 different categories from 63 different countries over a time period of 31 days. To measure the popularity of each event we use as a surrogate the number of attendees that registered for a specific event via Eventbrite.  In \Cref{fig:eventPop} we plot the number of registered attendees for different events grouping together events that had the same number of attendees. As shown, there is a large number of events with less than 100 attendees corresponding mostly to specialized seminars, and a small number of extremely popular events corresponding to concerts or live TV shows. 
 \end{example}
 
+\agp{not super clear how you plotted this}
+
 As we did not have immediate access to crowd workers for the aforementioned application, we also conducted a real crowdsourcing experiment via Amazon's Mechanical Turk (AMT)~\cite{mturk} that allowed us to precisely measure the popularity of extracted entities. 
 
 \begin{example}
 We asked workers to list ``people in the news''. In particular, we asked them to consider five major online US news portals, ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal'', and report five distinct people per HIT. We issued 600 HITs for \$0.20 per HIT served by 143 unique workers. To ensure the accuracy of our results we asked workers to provide us with a link corresponding to the extraction. These links were manually verified.  In total, we extracted 1,245 unique people. \Cref{fig:amtPop} shows the number of distinct workers that reported each person. As shown, there are 12 people that were reported by at least 20 different workers but there is a long tail of 842 people that were reported by one worker and 182 people reported by two workers. 
 \end{example}
 
+\agp{The examples are nice. Note that it's not clear what reporting means or
+what the workers are asked ---
+we need to stick to one of query, question, extract, report, etc.}
+
+\agp{CRUX, if we're using the acronym, needs to be introduced in the intro,
+not just in abstract.}
+
+\agp{Not super clear what the two graphs show -- i guess it's just that 
+we have a skewed probability distribution?
+can we also make the claim that: 
+there are actually just N entities:
+would it be possible to extract all entities using N or close to N crowd extractions, as opposed to using KN extractions, which is
+what we would have if we used repeated simple queries}
+
+\agp{got until here. }
 \noindent\textbf{Our approach.} In this paper, our goal is to {\em make crowdsourced entity extraction practical}. Unlike previous work, we focus on the problem of {\em budgeted crowdsourced entity extraction}, where we are given a budget and we want to maximize the number of retrieved entities; we believe this is a more practical goal, instead of the goal of retrieving all entities.  Effectively our goal is to minimize the total cost spent on duplicate extractions and maximize the total number of extracted entities. To do so, we focus on entity extraction over {\em structured domains}, i.e., domains that can be fully described by a collection of attributes, each potentially exhibiting hierarchical structure, and demonstrate how exploiting the domain's structure can help us achieve the aforementioned goal. We point out that often the structure of domains in practical applications is already known by design. For example, Eventbrite categorizes extracted events based on a location taxonomy, an event type and their date. 
 
 Leveraging this structure we use a much richer space of crowd queries, thus, we avoid issuing the same query repeatedly. More precisely, if we view the structured data domain as a \emph{partially ordered set} (poset), then each query can be mapped to a node in the graph describing its topology. This allows for more targeted queries, e.g., ``list an electro-swing concert in Greece'', and enables us to explore a larger space of entities effectively by focusing on diverse and potentially disjoint groups of entities. Moreover, we extend typical crowd queries to also include an {\em exclude list}, e.g., ``list an electro-swing concert in Greece that is not by Parov Stelar''. Both aforementioned approaches allow us to effectively reduce the number of duplicate extractions and enable us to extract more entities from the underlying domain (see \Cref{sec:exps}).
