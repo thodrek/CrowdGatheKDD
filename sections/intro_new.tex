@@ -13,55 +13,20 @@
 \agp{I wouldn't add the citations you added unless they refer
 to the use of structured data for those applications.}
 
-Structured data repositories, such as knowledge bases, taxono\-mies, and hierarchies, have recently been used to
-power end-user applications of many types, including keyword search engines,
-question answering systems, event detection and prediction algorithms, 
-as well as recommender systems. 
-For instance, a number of companies, including 
-Google~\cite{singhal2012introducing}
-Microsoft~\cite{cheng2010fuzzy}, Walmart~\cite{Deshpande:2013:BMU:2463676.2465297}, Yahoo~\cite{woo}, and Amazon~\cite{amazon-product}, all leverage
-structured data repositories for organizing and serving information
-for various applications. 
-However, most automated mechanisms to populate these repositories 
-end up focusing on {\em head data} --- data about popular entities, facts, 
-and attributes --- leaving behind a considerable volume of fine-grained
-data belonging to the {\em long tail}. 
-Thus, to leverage even more benefits from these repositories, it is
-essential to augment these repositories with long tail data, and keep
-them up-to-date. 
+Structured data repositories, such as knowledge bases, taxono\-mies, and hierarchies, have recently been used to power end-user applications of many types, including keyword search engines, question answering systems, event detection and prediction algorithms, as well as recommender systems. For instance, a number of companies, including Google~\cite{singhal2012introducing}, Microsoft~\cite{cheng2010fuzzy}, Walmart~\cite{Deshpande:2013:BMU:2463676.2465297}, Yahoo~\cite{woo}, and Amazon~\cite{amazon-product}, all leverage structured data repositories for organizing and serving information for various applications. However, most automated mechanisms to populate these repositories 
+end up focusing on {\em head data} --- data about popular entities, facts, and attributes --- leaving behind a considerable volume of fine-grained
+data belonging to the {\em long tail}. Thus, to leverage even more benefits from these repositories, it is essential to augment these repositories with long tail data, and keep them up-to-date. 
 
 % The recent vogue of extracting and categorizing disorganized information from various sources into centralized knowledge bases, taxonomies and structured data repositories has revolutionized many applications, including search and question answering~\cite{kngraph}, event monitoring and prediction~\cite{leetaru2013gdelt,Leban:2014} and recommendation systems~\cite{burke,Adomavicius:2005}. Nevertheless, most existing efforts to extract and collect information in repositories of organized data focus on {\em head data} - data about popular entities, facts, etc. -  leaving behind a considerable volume of fine-grained data belonging in the {\em long tail}, i.e., data about less popular entities, less popular facts and so on. Thus, it is of the utmost importance to tap into the long tail to get the most of available knowledge assets and collective expertise.
 
-\agp{I don't think we need to define crowdsourcing, waste of space; if
-you fix example in abstract, I'd fix this as well..}
-
-In the recent past, 
-{\em crowdsourcing} has proven effective to gather structured
-data on demand~\cite{franklin:2011,deco, trushkowsky:2013, amsterdamer:2014, park:2014, kondredi:2014}. 
-While automated mechanisms miss out on the {\em long-tail} data,
-crowdsourcing entity extraction has been shown to be capable of
-extracting data from the long-tail~\cite{trushkowsky:2013}.
-The prior work on this problem relies 
-repeatedly asking the same query to workers,
-instead focusing on the problem of determining when to stop~\cite{trushkowsky:2013}. For example, given the task of collecting all events, such as concerts, rallies, etc., in Greece, current techniques focus on asking workers to ``list one more event in Greece'' repeatedly until 
-a certain desired degree of completeness is achieved.
-
+In the recent past, {\em crowdsourcing} has proven effective to gather structured data on demand~\cite{franklin:2011,deco, trushkowsky:2013, amsterdamer:2014, park:2014, kondredi:2014}. While automated mechanisms miss out on the {\em long-tail} data, crowdsourcing entity extraction has been shown to be capable of extracting data from the long-tail~\cite{trushkowsky:2013}. The prior work on this problem relies 
+repeatedly asking the same query to workers, instead focusing on the problem of determining when to stop~\cite{trushkowsky:2013}. For example, given the task of collecting all modern philosophers, current techniques focus on asking workers to ``list one more modern philosopher'' repeatedly until a certain desired degree of completeness is achieved.
 
 % One of the most promising directions towards the conquest of long tail data is that of combining human computation with traditional computation, commonly referred to as {\em crowdsourcing}. Crowdsourcing is not a cheap way to outsource work to volunteers. However, when done right, it is an entire new form of {\em fine-grained knowledge production} with the potential to revolutionize many application domains ranging from imagine processing to traditional database and data curation systems. and data integration systems ~\cite{quinn-crowdsourcing, vox-populii, doan2011crowdsourcing, ribeiro11, deco, qurkCIDR, crowddb, tamer, franklin:2011, Parameswaran:2012, west:2014}.
 
 % Consequently, the problem of {\em crowdsourced entity extraction}, i.e., extracting and collecting entities from the crowd and building organized data catalogs, has gained increasing attention recently~\cite{trushkowsky:2013, amsterdamer:2014, park:2014, kondredi:2014}. Most existing approaches for crowdsourced entity extraction focus on {\em microtasked}-based approaches and rely on repeatedly asking the same query to workers. For example, given the task of collecting all events, such as concerts, rallies, etc., in Greece, current techniques focus on asking workers to ``list one more event in Greece'' repeatedly until a sufficient level of {\em completeness}, i.e., number of distinct entities, is achieved. The latter is rather challenging as we assume an ``open world''~\cite{franklin:2011} and absence of ground-truth information.
 
-
-However, while the previous work has demonstrated that it is indeed possible
-to use crowds to extract entities, repeatedly asking the same query to 
-workers until completion means that the scheme will lead to 
-the same entities---i.e., the popular ones---being repeatedly extracted
-by workers, while the not-so-popular ones will either never be extracted
-or only be extracted after a very long time. 
-For example, the \agp{fix based on example: popular entity X will be provided several times, while Y will only rarely be provided}.
-Thus, the large number of duplicate extractions renders crowdsourced
-entity extraction {\em impractical for large-scale applications.}
-
+However, while the previous work has demonstrated that it is indeed possible to use crowds to extract entities, repeatedly asking the same query to workers until completion means that the scheme will lead to the same entities---i.e., the popular ones---being repeatedly extracted by workers, while the not-so-popular ones will either never be extracted or only be extracted after a very long time. For example, the \agp{fix based on example: popular entity X will be provided several times, while Y will only rarely be provided}. Thus, the large number of duplicate extractions renders crowdsourced entity extraction {\em impractical for large-scale applications.}
 
 
 % Existing approaches~\cite{trushkowsky:2013} focus on devising techniques for estimating the completeness of the extraction result but startlingly fail to directly optimize (i.e., minimize) the total cost of extraction. In fact, issuing the same query repeatedly results in large numbers of duplicate extractions in most real-world scenarios. This is due to the fact that popular entities are provided by many workers, leading to increased duplicates, with the less popular entities not being as prevalent in the set of extracted entities. Large numbers of duplicate extractions increase the total cost of corwdsourced entity extraction significantly and can deem crowdsourced extraction impractical for large-scale applications. 
