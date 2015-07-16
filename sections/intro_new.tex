@@ -10,83 +10,48 @@
 \section{Introduction}
 \label{sec:intro}
 
-Structured data repositories, such as knowledge bases, taxono\-mies, and hierarchies, have recently been used to power end-user applications of many types, including keyword search engines, question answering systems, event detection and prediction algorithms, as well as recommender systems. For instance, a number of companies, including Google~\cite{singhal2012introducing}, Microsoft~\cite{cheng2010fuzzy}, Walmart~\cite{Deshpande:2013:BMU:2463676.2465297}, Yahoo~\cite{woo}, and Amazon~\cite{amazon-product}, all leverage structured data repositories for organizing and serving information for various applications. However, most automated mechanisms to populate these repositories end up focusing on {\em head data} --- data about popular entities, facts, and attributes --- leaving behind a considerable volume of fine-grained data belonging to the {\em long tail}. Thus, to leverage even more benefits from these repositories, it is essential to augment these repositories with long tail data, and keep them up-to-date. 
+Structured data repositories, such as knowledge bases, taxono\-mies, and hierarchies, have recently been used to power end-user applications of many types, including keyword search engines, question answering systems, event detection and prediction algorithms, as well as recommender systems. For instance, a number of companies, including Google~\cite{singhal2012introducing}, Microsoft~\cite{cheng2010fuzzy}, Walmart~\cite{Deshpande:2013:BMU:2463676.2465297}, Yahoo~\cite{woo}, and Amazon~\cite{amazon-product}, all leverage structured data repositories for organizing and serving information for various applications. However, most automated mechanisms to populate these repositories end up focusing on {\em head data} --- data about popular entities, facts, and attributes --- leaving behind a considerable volume of fine-grained data belonging to the {\em long tail}. Thus, to obtain even more benefits from these repositories, it is essential to augment these repositories with long tail data, and keep them up-to-date. 
 
-% The recent vogue of extracting and categorizing disorganized information from various sources into centralized knowledge bases, taxonomies and structured data repositories has revolutionized many applications, including search and question answering~\cite{kngraph}, event monitoring and prediction~\cite{leetaru2013gdelt,Leban:2014} and recommendation systems~\cite{burke,Adomavicius:2005}. Nevertheless, most existing efforts to extract and collect information in repositories of organized data focus on {\em head data} - data about popular entities, facts, etc. -  leaving behind a considerable volume of fine-grained data belonging in the {\em long tail}, i.e., data about less popular entities, less popular facts and so on. Thus, it is of the utmost importance to tap into the long tail to get the most of available knowledge assets and collective expertise.
+In the recent past, {\em crowdsourcing} has proven effective to gather structured data on demand~\cite{franklin:2011,deco, trushkowsky:2013, amsterdamer:2014, park:2014, kondredi:2014}. While automated mechanisms miss out on the {\em long-tail} data, crowdsourcing entity extraction has been shown to be capable of extracting data from the long-tail~\cite{trushkowsky:2013}. Prior work on this problem focuses on asking the same extraction query repeatedly to workers and studies the problem of determining when to stop the extraction process~\cite{trushkowsky:2013}. For example, given the task of collecting all modern philosophers, current techniques focus on asking workers to ``list one modern philosopher'' repeatedly until a certain desired degree of completeness is achieved.
 
-In the recent past, {\em crowdsourcing} has proven effective to gather structured data on demand~\cite{franklin:2011,deco, trushkowsky:2013, amsterdamer:2014, park:2014, kondredi:2014}. While automated mechanisms miss out on the {\em long-tail} data, crowdsourcing entity extraction has been shown to be capable of extracting data from the long-tail~\cite{trushkowsky:2013}. Prior work on this problem focuses on asking the same extraction query repeatedly to workers and studies the problem of determining when to stop the extraction process~\cite{trushkowsky:2013}. For example, given the task of collecting all modern philosophers, current techniques focus on asking workers to ``list one more modern philosopher'' repeatedly until a certain desired degree of completeness is achieved.
+However, while the previous work demonstrated that it is indeed possible to use crowds to extract entities, asking only one query to workers until completion means that the scheme will lead to the same entities---i.e., the popular ones---being repeatedly extracted by workers, while the not-so-popular ones will either never be extracted or only be extracted after a very long time. For example, the famous philosopher Bertrand Russell may be provided significantly more times than the less popular Greek-French philosopher Cornelios Castoriadis. This phenomenon, i.e., the skewed popularity of entities, can lead to increased duplicate extractions, rendering existing crowdsourced entity extraction techniques {\em impractical} for large-scale applications. 
 
-% One of the most promising directions towards the conquest of long tail data is that of combining human computation with traditional computation, commonly referred to as {\em crowdsourcing}. Crowdsourcing is not a cheap way to outsource work to volunteers. However, when done right, it is an entire new form of {\em fine-grained knowledge production} with the potential to revolutionize many application domains ranging from imagine processing to traditional database and data curation systems. and data integration systems ~\cite{quinn-crowdsourcing, vox-populii, doan2011crowdsourcing, ribeiro11, deco, qurkCIDR, crowddb, tamer, franklin:2011, Parameswaran:2012, west:2014}.
+\begin{table}[h]
+\small \center
+\caption{Percentage of duplicate extractions for different person-type, news portal combinations.}
+\label{tab:duplicates}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Portal & {\bf Actors/Singer}s & {\bf Athletes} & \textbf{Politicians}\\ \hline
+{\bf Wash. Post} & 0.47 & 0.55 & 0.56 \\
+{\bf NY Times} & 0.41& 0.65 & 0.53 \\
+{\bf Huff. Post} & 0.45 & 0.63 & 0.60 \\
+{\bf USA Today} & 0.54 & 0.45 & 0.57 \\
+{\bf WSJ} & 0.42 & 0.77 & 0.57 \\
+\hline
+\end{tabular}
+\end{table}
 
-% Consequently, the problem of {\em crowdsourced entity extraction}, i.e., extracting and collecting entities from the crowd and building organized data catalogs, has gained increasing attention recently~\cite{trushkowsky:2013, amsterdamer:2014, park:2014, kondredi:2014}. Most existing approaches for crowdsourced entity extraction focus on {\em microtasked}-based approaches and rely on repeatedly asking the same query to workers. For example, given the task of collecting all events, such as concerts, rallies, etc., in Greece, current techniques focus on asking workers to ``list one more event in Greece'' repeatedly until a sufficient level of {\em completeness}, i.e., number of distinct entities, is achieved. The latter is rather challenging as we assume an ``open world''~\cite{franklin:2011} and absence of ground-truth information.
+\vspace{2pt}\noindent\textbf{The impact of duplicates.} To understand the impact of duplicates we conducted a real entity extraction experiment using Amazon's Mechanical Turk (AMT)~\cite{mturk}. We focused on {\em extracting people from the news} and asked workers to list different types of people mentioned in five major online US news portals. More specifically, we asked workers to provide us with ``Actors/Singers'', ``Athletes'', and ``Politicians'' listed in ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal''. We issued a total of 150 extraction queries for each $<$person-type, news portal$>$ combination, e.g., ``Athletes mentioned in NY Times''. 
 
-However, while the previous work demonstrated that it is indeed possible to use crowds to extract entities, asking only one query to workers until completion means that the scheme will lead to the same entities---i.e., the popular ones---being repeatedly extracted by workers, while the not-so-popular ones will either never be extracted or only be extracted after a very long time. For example, the famous philosopher Bertrand Russell may be provided significantly more times than the less popular Greek-French philosopher Cornelios Castoriadis. This phenomenon, i.e., the skewed popularity of entities, can lead to large number of duplicate extractions, rendering crowdsourced entity extraction {\em impractical for large-scale applications}. To fully understand the effect of duplicate extractions we conducted a real crowdsourced extraction experiment.
+\Cref{tab:duplicates} shows the percentage of duplicate extractions for different $<$person-type, news portal$>$ combinations. As shown, on average, more than half of extraction queries result in duplicates while there are cases where the percentage of duplicate extractions {\bf increases to 77\%}. 
 
-\begin{example}
-We considered the application of enumerating ``people in the news''. We asked workers to consider five major online US news portals, ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal'', and report five distinct people per HIT. We issued 600 HITs for \$0.20 per HIT served by 143 unique workers. To ensure the accuracy of our results we asked workers to provide us with a link corresponding to the extraction. These links were manually verified.  In total, we extracted 1,245 unique people. \Cref{fig:amtPop} shows the number of distinct workers that reported each person. As shown, there are 12 people that were reported by at least 20 different workers but there is a long tail of 842 people that were reported by one worker and 182 people reported by two workers. 
-\end{example}
+Moreover, we see that the number of duplicate extractions varies significantly for different entity-type and news portal combinations. This leads to the natural question of {\bf which are the right crowd extraction queries that will maximize the total number of extracted entities}. For instance, in the previous scenario, if we want to extract as many athletes as possible, we should limit the budget spent on extracting entities from the Wall Street Journal and allocate a larger budget to Huffington Post. Exploiting the inherent {\em structure} of an entity domain provides us with the opportunity to minimize the number of duplicate extractions and reason about the optimal queries to be issued against workers. In fact, most large-scale real-world applications that collect and organize information extracted by the crowd focus on structured domains. For example, consider Eventbrite~(\url{www.eventbrite.com}), an online event aggregator, that relies on crowdsourcing to compile a directory of events, such as political rallies, concerts, etc. Events are fully described by their location, type, date and category. Despite the above, existing work on crowdsourced entity extraction does not provide techniques to find the most profitable extraction queries.
 
-To understand the impact of duplicate extractions we conducted the following experiment. We asked workers via Amazon's Mechanical Turk (AMT)~\cite{mturk} to list 
+\vspace{2pt}\noindent\textbf{Our approach.} In this paper, we introduce CRUX, a novel algorithmic framework for making {\em  crowdsourced entity extraction practical}. Unlike previous work, CRUX focuses on the problem of {\em budgeted crowdsourced entity extraction}, where we are given a budget and we want to maximize the number of retrieved entities; we believe this is a more practical goal, instead of the goal of retrieving all entities.  Effectively our goal is to minimize the total cost spent on duplicate extractions and maximize the total number of extracted entities. To do so, we focus on entity extraction over {\em structured domains}, i.e., domains that can be fully described by a collection of attributes, each potentially exhibiting hierarchical structure, and demonstrate how exploiting the domain's structure can help us achieve the aforementioned goal. We point out that often the structure of domains in practical applications is already known by design. 
 
-The situation only becomes worse when entities follow a skewed, long tail {\em popularity distribution}, i.e., a small number of entities have significantly higher probability of appearing in worker answers while a large number of {\em rare} entities have minuscule probability of being extracted. Next, we consider two crowdsourced entity extraction applications to demonstrate the presence of long tail popularity distributions and exemplify how they can lead to increased numbers of duplicate extractions.
+Leveraging this structure we use a much richer space of crowd queries, thus, we avoid issuing the same query repeatedly. More precisely, if we view the structured data domain as a \emph{partially ordered set} (poset), then each query can be mapped to a node in the graph describing its topology. This allows for more targeted queries, e.g., ``list a Greek modern philosopher'', and enables us to explore a larger space of entities effectively by focusing on diverse and potentially disjoint groups of entities. Moreover, we extend typical crowd queries to also include an {\em exclude list}, e.g., ``list a modern -philosopher that is not Bertrand Russell''. Both aforementioned approaches allow us to effectively reduce the number of duplicate extractions and enable us to extract more entities from the underlying domain (see \Cref{sec:exps}).
 
-\textcolor{red}{
-\begin{enumerate}
-\item There are many extraction domains that exhibit structure. Different from simple domains such as list all ice cream flavors. Example, online aggregation of events, extraction of named entities etc. Diversification important. 
-\item Show why. Example, extract humans from different news papers. We see that we have different duplicate rates for different predicate combinations. How can we reason about which predicates to include in our queries? Work on example.
-\end{enumerate}
-}
+The ability to ask richer queries comes with a host of new challenges. First, we need to address the fundamental question: {\em Which is the most profitable query to issue next?}. For this, we propose a collection of  statistical techniques for estimating the {\em gain} of further queries, i.e., the number of new distinct entities extracted, for any node in the poset. Our techniques make use of the extracted entities by previously issued queries to derive accurate estimates for new queries corresponding to the nodes of the poset.  
 
-\begin{figure*}
-	\centering
-	\subfigure[Event popularity in EventBrite.]{\includegraphics[clip,scale=0.35]{figs/eventPop.eps}\label{fig:eventPop}}
-	\subfigure[Entity popularity in crowdsourced people extraction.]{\includegraphics[clip,scale=0.35]{figs/amtPop.eps}\label{fig:amtPop}}
-	\caption{Entity popularity distributions exhibit long tails in real crowdsourced entity extraction applications.}
-\end{figure*}
-
-\begin{example}
-First, we consider Eventbrite~(\url{www.eventbrite.com}), an online event aggregator, that relies on crowdsourcing to compile a directory of events with detailed information about the location, type, date and category of each event. We collected a dataset via Eventbrite's API with events of 19 different categories from 63 different countries over a time period of 31 days. To measure the popularity of each event we use as a surrogate the number of attendees that registered for a specific event via Eventbrite.  In \Cref{fig:eventPop} we plot the number of registered attendees for different events grouping together events that had the same number of attendees. As shown, there is a large number of events with less than 100 attendees corresponding mostly to specialized seminars, and a small number of extremely popular events corresponding to concerts or live TV shows. 
-\end{example}
-
-\agp{not super clear how you plotted this}
-
-As we did not have immediate access to crowd workers for the aforementioned application, we also conducted a real crowdsourcing experiment via Amazon's Mechanical Turk (AMT)~\cite{mturk} that allowed us to precisely measure the popularity of extracted entities. 
-
-\begin{example}
-We asked workers to extract ``people in the news''. In particular, we asked them to consider five major online US news portals, ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal'', and report five distinct people per HIT. We issued 600 HITs for \$0.20 per HIT served by 143 unique workers. To ensure the accuracy of our results we asked workers to provide us with a link corresponding to the extraction. These links were manually verified.  In total, we extracted 1,245 unique people. \Cref{fig:amtPop} shows the number of distinct workers that reported each person. As shown, there are 12 people that were reported by at least 20 different workers but there is a long tail of 842 people that were reported by one worker and 182 people reported by two workers. 
-\end{example}
-
-\agp{The examples are nice. Note that it's not clear what reporting means or
-what the workers are asked ---
-we need to stick to one of query, question, extract, report, etc.}
-
-\agp{CRUX, if we're using the acronym, needs to be introduced in the intro,
-not just in abstract.}
-
-\agp{Not super clear what the two graphs show -- i guess it's just that 
-we have a skewed probability distribution?
-can we also make the claim that: 
-there are actually just N entities:
-would it be possible to extract all entities using N or close to N crowd extractions, as opposed to using KN extractions, which is
-what we would have if we used repeated simple queries}
-
-\agp{got until here. }
-\noindent\textbf{Our approach.} In this paper, our goal is to {\em make crowdsourced entity extraction practical}. Unlike previous work, we focus on the problem of {\em budgeted crowdsourced entity extraction}, where we are given a budget and we want to maximize the number of retrieved entities; we believe this is a more practical goal, instead of the goal of retrieving all entities.  Effectively our goal is to minimize the total cost spent on duplicate extractions and maximize the total number of extracted entities. To do so, we focus on entity extraction over {\em structured domains}, i.e., domains that can be fully described by a collection of attributes, each potentially exhibiting hierarchical structure, and demonstrate how exploiting the domain's structure can help us achieve the aforementioned goal. We point out that often the structure of domains in practical applications is already known by design. For example, Eventbrite categorizes extracted events based on a location taxonomy, an event type and their date. 
-
-Leveraging this structure we use a much richer space of crowd queries, thus, we avoid issuing the same query repeatedly. More precisely, if we view the structured data domain as a \emph{partially ordered set} (poset), then each query can be mapped to a node in the graph describing its topology. This allows for more targeted queries, e.g., ``list an electro-swing concert in Greece'', and enables us to explore a larger space of entities effectively by focusing on diverse and potentially disjoint groups of entities. Moreover, we extend typical crowd queries to also include an {\em exclude list}, e.g., ``list an electro-swing concert in Greece that is not by Parov Stelar''. While large exclude lists may not be practical in rea; we consider this a major limitation of prior work that shows all prior entities to workers. By using small exclude lists (<= 10, Sec 5.1) and populating them randomly, we utilize them only if benefits are significant. 
-
-Both aforementioned approaches allow us to effectively reduce the number of duplicate extractions and enable us to extract more entities from the underlying domain (see \Cref{sec:exps}).
-
-The ability to ask richer queries comes with a host of new challenges. First and foremost, we need to address the fundamental question: {\em Which is the most profitable query to issue next?}. For this, we propose a collection of  statistical techniques for estimating the {\em gain} of further queries, i.e., the number of new distinct entities extracted, for any node in the poset. Our techniques make use of the extracted entities by previously issued queries to derive accurate estimates for new queries corresponding to the nodes of the poset.  
-
-However, the input poset is of exponential size with respect to the number of attributes describing the domain. This, leads to additional challenges in deciding which queries to issue: (a)~{\em Sparsity:} Many of the nodes in the poset are likely to be empty, i.e., the queries corresponding to those nodes are likely to not have any answers; avoiding asking queries corresponding to these nodes is essential to keep monetary cost low. (b)~{\em Limited information:} The larger the poset the fewer the observed entities corresponding to lower level nodes in the poset, thus, we only have limited information when estimating the gain of further queries at these nodes.  (c)~{\em Interrelationships:} Many of the nodes in the poset are ``coupled'' with one another; for example, the results from a few queries corresponding to ``list a concert in Greece'' can inform whether issuing queries corresponding to ``list a rock concert in Greece'' is useful or not. 
+However, the input poset is of exponential size with respect to the number of attributes describing the domain. This, leads to additional challenges in deciding which queries to issue: (a)~{\em Sparsity:} Many of the nodes in the poset are likely to be empty, i.e., the queries corresponding to those nodes are likely to not have any answers; avoiding asking queries corresponding to these nodes is essential to keep monetary cost low. (b)~{\em Limited information:} The larger the poset the fewer the observed entities corresponding to lower level nodes in the poset, thus, we only have limited information when estimating the gain of further queries at these nodes.  (c)~{\em Interrelationships:} Many of the nodes in the poset are ``coupled'' with one another; for example, the results from a few queries corresponding to ``list a political philosopher'' can inform whether issuing queries corresponding to ``list a German political philosopher'' is useful or not. 
 
 In summary, our main contributions are as follows:
 \squishlist
-\item We formalize the notion of {\em generalized queries} that ask workers to provide us with entities from a domain $D$ and can also include an {\em exclude list}. In general such queries are of the type ``List $k$ entities with attributes $\bar{X}$ that belong in domain $D$ and are not in $\{A, B, ...\}$''.  Extending techniques from the species estimation and building upon the multi-armed bandits literature, we introduce a new methodology for estimating the gain for generalized queries. 
-\item We propose a novel algorithmic framework that exploits the structure of the entity extraction domain to maximize the number of extracted entities under given budget constraints by targeting tail entities. In particular, we view the problem of entity extraction as a {\em multi-round adaptive optimization problem}. At  each round we exploit the information on extracted entities obtained by previous queries to adaptively select the crowd query that will maximize the {\em cost-gain} trade-off at each round. 
+\item We formalize the notion of {\em generalized queries} that ask workers to provide us with entities from a domain $D$ and can also include an {\em exclude list}. In general such queries are of the type ``List $k$ entities with attributes $\bar{X}$ that belong in domain $D$ and are not in $\{A, B, ...\}$''.  We also provide a collection of statistical techniques to estimate the gain, i.e., the number of newly extracted distinct entities, for generalized queries. 
 \item We develop a new technique to estimate the gain of generalized entity extraction queries under the presence of little information, i.e., only when a small portion of the underlying entity population has been observed. We empirically demonstrate its effectiveness when extracting entities from sparse domains.
-\item Finally, we show that our techniques can effectively solve the problem of budgeted crowd entity extraction for large data domains on both real-world and synthetic data.
+\item We propose a novel algorithmic framework that exploits the structure of the entity domain to maximize the number of extracted entities under given budget constraints by targeting tail entities. In particular, we view the problem of entity extraction as a {\em multi-round adaptive optimization problem}. At  each round we exploit the available information about entities obtained by previous queries to adaptively select the next crowd query that will maximize the {\em cost-gain} trade-off at each round. 
+\item Finally, we evaluate the effectiveness of our techniques on both real-world and synthetic data, and demonstrate that can extract 4X more entities over competing state-of-the-art techniques for the same budget.
 \squishend
 
 %Our main contributions are as follows:
@@ -179,3 +144,69 @@ In summary, our main contributions are as follows:
 %\item Finally, we show that our techniques can effectively solve the problem of budgeted crowd entity extraction for large data domains on both real-world and synthetic data.
 %\squishend
 
+%
+%
+%
+%\noindent\textbf{Our approach.} In this paper, we focus on entity extraction over {\em structured domains}, i.e., domains that can be fully described by a collection of attributes, each potentially exhibiting hierarchical structure, and demonstrate how exploiting the domain's structure can help us achieve the aforementioned goal. 
+%In fact, most practical  applications that focus on aggregating and organizing information extracted from the crowd exhibit some form of structure. 
+%
+%
+%To do so, we focus on entity extraction over {\em structured domains}, i.e., domains that can be fully described by a collection of attributes, each potentially exhibiting hierarchical structure, and demonstrate how exploiting the domain's structure can help us achieve the aforementioned goal. We point out that often the structure of domains in practical applications is already known by design. For example, Eventbrite categorizes extracted events based on a location taxonomy, an event type and their date. 
+%
+%Naturally, we should exploit the {\em structure} of the entity extraction domain, here, the entity-type and news portal, to minimize the number of duplicate extractions.
+%
+%\noindent\textbf{Structured entity domains.}
+%An additional limitation of existing crowdsourced entity extraction techniques is that they are agnostic to the inherent {\em structure} that large-scale entity domains exhibit. In most practical scenarios, the entity domain can be described by a collection of attributes. For instance, if we consider the previous example of extracting modern philosophers, it is easy to see that the underlying domain can be described by attributes such as the nationality of a philosopher, her school of thought and her era. In fact many real-world crowdsourcing applications rely on s
+%
+%Exploiting the structure of the domain allows one to issue a collection of queries with different predicates corresponding to various attribute combinations. The latter is indeed used in real-world crowdsourcing applications. 
+%
+%
+%\begin{example}
+%We considered the application of enumerating ``people in the news''. We asked workers to consider five major online US news portals, ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal'', and report five distinct people per HIT. We issued 600 HITs for \$0.20 per HIT served by 143 unique workers. To ensure the accuracy of our results we asked workers to provide us with a link corresponding to the extraction. These links were manually verified.  In total, we extracted 1,245 unique people. \Cref{fig:amtPop} shows the number of distinct workers that reported each person. As shown, there are 12 people that were reported by at least 20 different workers but there is a long tail of 842 people that were reported by one worker and 182 people reported by two workers. 
+%\end{example}
+%
+%To understand the impact of duplicate extractions we conducted the following experiment. We asked workers via Amazon's Mechanical Turk (AMT)~\cite{mturk} to list 
+%
+%The situation only becomes worse when entities follow a skewed, long tail {\em popularity distribution}, i.e., a small number of entities have significantly higher probability of appearing in worker answers while a large number of {\em rare} entities have minuscule probability of being extracted. Next, we consider two crowdsourced entity extraction applications to demonstrate the presence of long tail popularity distributions and exemplify how they can lead to increased numbers of duplicate extractions.
+%
+%\textcolor{red}{
+%\begin{enumerate}
+%\item There are many extraction domains that exhibit structure. Different from simple domains such as list all ice cream flavors. Example, online aggregation of events, extraction of named entities etc. Diversification important. 
+%\item Show why. Example, extract humans from different news papers. We see that we have different duplicate rates for different predicate combinations. How can we reason about which predicates to include in our queries? Work on example.
+%\end{enumerate}
+%}
+%
+%\begin{figure*}
+%	\centering
+%	\subfigure[Event popularity in EventBrite.]{\includegraphics[clip,scale=0.35]{figs/eventPop.eps}\label{fig:eventPop}}
+%	\subfigure[Entity popularity in crowdsourced people extraction.]{\includegraphics[clip,scale=0.35]{figs/amtPop.eps}\label{fig:amtPop}}
+%	\caption{Entity popularity distributions exhibit long tails in real crowdsourced entity extraction applications.}
+%\end{figure*}
+%
+%\begin{example}
+%First, we consider Eventbrite~(\url{www.eventbrite.com}), an online event aggregator, that relies on crowdsourcing to compile a directory of events with detailed information about the location, type, date and category of each event. We collected a dataset via Eventbrite's API with events of 19 different categories from 63 different countries over a time period of 31 days. To measure the popularity of each event we use as a surrogate the number of attendees that registered for a specific event via Eventbrite.  In \Cref{fig:eventPop} we plot the number of registered attendees for different events grouping together events that had the same number of attendees. As shown, there is a large number of events with less than 100 attendees corresponding mostly to specialized seminars, and a small number of extremely popular events corresponding to concerts or live TV shows. 
+%\end{example}
+%
+%\agp{not super clear how you plotted this}
+%
+%As we did not have immediate access to crowd workers for the aforementioned application, we also conducted a real crowdsourcing experiment via Amazon's Mechanical Turk (AMT)~\cite{mturk} that allowed us to precisely measure the popularity of extracted entities. 
+%
+%\begin{example}
+%We asked workers to extract ``people in the news''. In particular, we asked them to consider five major online US news portals, ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal'', and report five distinct people per HIT. We issued 600 HITs for \$0.20 per HIT served by 143 unique workers. To ensure the accuracy of our results we asked workers to provide us with a link corresponding to the extraction. These links were manually verified.  In total, we extracted 1,245 unique people. \Cref{fig:amtPop} shows the number of distinct workers that reported each person. As shown, there are 12 people that were reported by at least 20 different workers but there is a long tail of 842 people that were reported by one worker and 182 people reported by two workers. 
+%\end{example}
+%
+%\agp{The examples are nice. Note that it's not clear what reporting means or
+%what the workers are asked ---
+%we need to stick to one of query, question, extract, report, etc.}
+%
+%\agp{CRUX, if we're using the acronym, needs to be introduced in the intro,
+%not just in abstract.}
+%
+%\agp{Not super clear what the two graphs show -- i guess it's just that 
+%we have a skewed probability distribution?
+%can we also make the claim that: 
+%there are actually just N entities:
+%would it be possible to extract all entities using N or close to N crowd extractions, as opposed to using KN extractions, which is
+%what we would have if we used repeated simple queries}
+%
+%\agp{got until here. }
