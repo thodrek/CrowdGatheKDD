@@ -3,17 +3,17 @@
 
 \section{Experimental Evaluation}
 \label{sec:exps}
-We present an empirical evaluation of our proposed algorithmic framework using both real and synthetic datasets. First, we discuss the experimental methodology, then we describe the data and results that demonstrate the effectiveness of our framework on crowdsourced entity extraction. The evaluation is performed on an Intel(R) Core(TM) i7 3.7 GHz 32GB machine; all algorithms are implemented in Python 2.7. 
+We present an empirical evaluation of CRUX using both real and synthetic datasets. First, we discuss the experimental methodology, then we describe the data and results that demonstrate the effectiveness CRUX on crowdsourced entity extraction. The evaluation is performed on an Intel(R) Core(TM) i7 3.7 GHz 32GB machine; all algorithms are implemented in Python 2.7. 
 
 \subsection{Experimental Setup}
 \label{sec:expsetup}
 \vspace{2pt}\noindent\textbf{Gain Estimators.} We evaluate the following gain estimators:
 \squishlist
 \item Chao92Shen: This estimator combines the methodology proposed by Chao~\cite{chao:1992} for estimating the number of unseen species  with Shen's formula, i.e., \Cref{eq:shen}.
-\item HwangShen: This estimator combines the regression-based approach proposed by Hwang and Shen~\cite{hwang:2010} for estimating the number of unseen species with Shen's formula. 
+\item HwangShen: This estimator combines the regression-based approach proposed by Hwang and Shen~\cite{hwang:2010} for estimating the number of unseen species $f_0$ with Shen's formula. 
 \item NewRegr: This estimator corresponds to our new technique proposed in \Cref{sec:newestim}.
 \squishend
-All estimators were coupled with bootstrapping to estimate their variance to retrieve an upper bound on the return of a query as shown in \Cref{sec:balancing}.
+All estimators are coupled with bootstrapping to estimate the gain variance used for retrieving an upper bound on the return of a query as shown in \Cref{sec:balancing}.
 
 \vspace{2pt}\noindent\textbf{Entity Extraction Algorithms.} We evaluate the following algorithms for crowdsourced entity extraction:
 \squishlist
