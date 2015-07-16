@@ -99,9 +99,9 @@
 \maketitle
 
 \begin{abstract}
-Structured data repositories, such as knowledge bases, ontologies, or taxonomies, have dramatically increased our ability to identify and interpret information. While successful in improving or enriching keyword search, question answering,  event detection, and recommender systems, structured data repositories suffer from a lack of fine-grained data in the {\em long tail.} Crowdsourcing, on the other hand, has been proven effective in extracting fine-grained information. However, current approaches for using the crowd to extract and collect data (e.g., list all modern philosophers) focus on asking the same query (e.g., ``list a modern philosopher'') repeatedly. As a result, they are wasteful, since a small number of popular entities are provided by many workers, leading to increased duplicates, with the less popular entities not being as prevalent in the set of extracted entities.  
+Structured data repositories, such as knowledge bases, ontologies, and taxonomies, have dramatically increased our ability to identify and interpret information. While successful in improving or enriching keyword search, question answering,  event detection, and recommender systems, structured data repositories suffer from a lack of fine-grained {\em long tail} data. At the same time, while crowdsourcing has been proven successful in extracting fine-grained information, current approaches using the crowd to extract and collect data are not effective at extracting data from the long tail; the current approaches either lead to wasteful queries and duplicate answers or require use of unrealistic queries.
 
-In this paper, we develop CRUX, a CRowdsoUrced data eXtraction framework that significantly limits duplicate extractions (and thereby wasted cost) by leveraging attributes that characterize these entities. For instance, we can instead ask queries such as ``list a {\em political} modern philosopher'', or ``list an {\em idealist} modern philosopher'', that allows us to explore a larger space of entities by asking targeted queries. However, the ability to ask richer queries comes with a host of issues, such as a potentially exponential query space, with many non-profitable queries targeting small entity groups. We develop new statistical tools to reason about the gain, i.e., the number of new distinct extracted entities, of issuing {\em further queries} under the presence of little to no information allowing us to effectively prune futile queries. We also develop algorithms to discover adaptive querying strategies that seek to maximize the number of distinct extracted entities under budget constraints. We evaluate our techniques on both synthetic and real-world datasets, demonstrating a yield of up to 4X over competing approaches for the same budget.
+In this paper, we develop CRUX, a CRowdsoUrced data eXtraction framework that significantly limits duplicate extractions (and thereby wasted cost) by leveraging attributes that characterize these entities. For instance, if we want to extract {\em all modern philosophers}, instead of asking a query such as ``list a modern philosopher'', we ask queries such as ``list a political modern philosopher'', or ``list an idealist modern philosopher from the US''; such targeted queries allow us to explore a larger space of entities. However, the ability to ask richer queries comes with a host of issues, including an exponential query space, with many non-profitable queries targeting small entity groups. We develop new statistical tools to reason about the gain, i.e., the number of new distinct extracted entities, of issuing {\em further queries} under the presence of little to no information; this allows us to effectively prune futile queries. We also develop algorithms to discover adaptive querying strategies that seek to maximize the number of distinct extracted entities under budget constraints. We evaluate our techniques on both synthetic and real-world datasets, demonstrating a yield of up to 4X over competing approaches for the same budget.
 \end{abstract}
 
 \input{sections/intro_new}
@@ -116,8 +116,10 @@ In this paper, we develop CRUX, a CRowdsoUrced data eXtraction framework that si
 %\ifpaper
 %\scriptsize
 %\fi
+{\small 
 \bibliographystyle{abbrv}
 \bibliography{crowd_hierarchies}
+}
 
 \appendix
 \section{Proof of Theorem 1}
