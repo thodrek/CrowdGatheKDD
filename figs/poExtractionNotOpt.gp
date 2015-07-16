@@ -2,7 +2,7 @@ set ter postscript enhanced color eps "Helvetica" 30
 set output "poExtractionNotOpt.eps"
 set boxwidth 0.9 absolute
 set size square
-set title "{/Helvetica-Bold Extraction Performance - People's Domain"
+set title "{/Helvetica-Bold Extraction Performance - PeopleInNews"
 set xlabel  "Budget"
 set ylabel  "Extracted People"
 set datafile missing "-"

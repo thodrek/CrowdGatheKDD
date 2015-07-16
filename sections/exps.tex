@@ -31,41 +31,41 @@ Rand, RandL and BFS promote the exploration of the action space when extracting 
 
 The three partial cost terms are: (i) {\sf CostK} that depends on the number of responses $k$ requested from a user, (ii) {\sf CostL} that depends on the size of the exclude list $l$ used in the query, and (iii) {\sf CostSpec} that depends on the {\em specificity} of the query $q_s$, e.g., we assume that queries that require users to provide more specialized entities (e.g., ``list one concert for New York on the 17th of Nov'') cost more than more generic queries (e.g.,  ``list one concert in New York''). More formally, we define the specificity of a query to be equal to the number of attributes assigned non-wildcard values for the node $u \in \hierarchy$ the query corresponds to. 
 
-The overall cost for a query with configuration $(k,l)$ with specificity $s$ is computed as:{\scriptsize $Cost(q) = \alpha \cdot \frac{k}{\mbox{max. query size}} + \beta \cdot  \frac{l}{\mbox{max. ex. list size}} + \gamma \cdot  \frac{s}{\mbox{max. specificity}} $}. The cost of a query should be significantly increased when an exclude list is used, thus we require that $\beta$ is set to a larger value than $\alpha$ and $\gamma$. For the results reported below, we set $\alpha = \gamma = 1$ and $\beta = 5$. The relative performance of the algorithms for different $\alpha$, $\beta$, and $\gamma$ settings is similar to that reported below.
+We consider two types of cost functions. The first one corresponds to a linear function where the overall cost for a query with configuration $(k,l)$ with specificity $s$ is computed as:{\scriptsize $Cost(q) = \alpha \cdot \frac{k}{\mbox{max. query size}} + \beta \cdot  \frac{l}{\mbox{max. ex. list size}} + \gamma \cdot  \frac{s}{\mbox{max. specificity}} $}. The cost of a query should be significantly increased when an exclude list is used, thus $\beta$ should be set to a larger value than $\alpha$ and $\gamma$. Different $(\alpha, \beta, \gamma)$ configurations were tested. We also considered a step cost function ${\sf CostK} + {\sf CostL}$, where {\sf CostK} and {\sf CostL} are set as follows: $(k,{\sf CostK} = \{(5,\$0.20), (10,\$0.60), (20,\$0.80)\}$ and $(l,{\sf CostL} = \{(0,\$0), (2,\$0.10), (5,\$0.50), (10,\$0.70)\}$. We observed that the {\em relative performance} of the extraction algorithms for different cost functions was the similar. In the discussion below, we report the cost function we used for each experiment. 
 
 \vspace{5pt}\noindent\textbf{Data.} First, we evaluate the proposed framework on extracting entities from a large sparse domain. We consider a dataset extracted from Eventbrite (see\Cref{sec:intro}). We collected a dataset spanning over 63 countries that are divided into 1,709 subareas (e.g., states) and 10,739 cities, containing events of 19 different types, such as rallies, tournaments, conferences, conventions, etc. and a time period of 31 days spanning over the months of October and November. The dataset is described by three dimensions: (i) event type, (ii) location, and (iii) time. Two of the three dimensions, i.e., location and time, are hierarchically structured. The poset characterizing the domain can be fully specified if we consider the cross product across the possible values for location, event type and time. For each of the location, time, type dimensions we also consider a special {\em wildcard} value. Taking the cross-product across the possible values of these dimensions results in poset with a total of 8,508,160 nodes containing 57,805 distinct events overall. We point out that only 175,068 nodes are populated leading to a rather sparsely populated domain. Due to lack of popularity proxies for the extracted events, we assigned a random {\em popularity value} in $(0,10]$ to each event. These weights are used to form the actual popularity distribution characterizing the population of each node in the poset. 
 
 We further evaluate the performance of the extraction algorithms for a more dense domain, that we constructed ourselves. As described in ~\Cref{sec:intro}, we used Amazon's Mechanical Turk (AMT)~\cite{mturk} to collect a real-world dataset, targeted at extracting ``people in the news''. This domain is still structured and the attributes characterizing it are the occupation of each person and the news portal. We asked workers to extract the names of people belonging to four different occupations from five different news portals. The people occupations we considered are ``Politicians'', ``Athletes'', ``Actors/Singers'' and ``Industry People''. The news portals we considered are ``New York Times'', ``Huffington Post'', ``Washington Post'', ``USA  Today'' and ``The Wall Street Journal''. 
 
-This data domain, referred to as the PeopleInNews, is essentially characterized by the type of the individual and the news portal. Workers were paid \$0.20 per HIT. We issued 20 HITS for each leaf node of the domain's poset, resulting in 600 HITS in total. After manually curating name misspelling's, we extracted 1,245 unique people in total. \Cref{tab:ptypedata} shows the number of distinct entities for the different values of the people-type and news portal attributes. Finally, the popularity value of each extracted entity was assigned to be equal to the number of distinct workers that reported it. The values are normalized during to form a proper popularity distribution. Collecting a large amount of data in advance from A and then simulating the responses of human workers by revealing portions of this dataset allows us to compare different algorithms on an equal footing; this approach is often adopted in the evaluation of crowdsourcing algorithms~\cite{DBLP:journals/pvldb/ParameswaranBG0PW14, marcus:2011,trushkowsky:2013}.
+This data domain, referred to as the PeopleInNews, is essentially characterized by the type of the individual and the news portal. Workers were paid \$0.20 per HIT. We issued 20 HITS for each leaf node of the domain's poset, resulting in 600 HITS in total. After manually curating name misspelling's, we extracted 1,245 unique people in total. The popularity value of each extracted entity was assigned to be equal to the number of distinct workers that reported it. The values are normalized during to form a proper popularity distribution. Collecting a large amount of data in advance from A and then simulating the responses of human workers by revealing portions of this dataset allows us to compare different algorithms on an equal footing; this approach is often adopted in the evaluation of crowdsourcing algorithms~\cite{DBLP:journals/pvldb/ParameswaranBG0PW14, marcus:2011,trushkowsky:2013}.
 
-\begin{table}
-\center
-\caption{The population characteristics for PeopleInNews.}
-\label{tab:ptypedata}
-\begin{tabular}{|c|c|}
-\hline
-\textbf{Occupation} & \textbf{People} \\ \hline
-Industry People & 743 \\
-Athletes & 743 \\
-Politicians & 748 \\
-Actors/Singers & 744 \\ \hline
-\end{tabular}
-\quad
-\begin{tabular}{|c|c|}
-\hline
-\textbf{News Portal} & \textbf{People} \\ \hline
-WSJ & 594 \\
-WashPost & 597 \\
-NY Times & 595 \\
-HuffPost & 599 \\
-USA Today & 593 \\ \hline
-\end{tabular}
-\vspace{-10pt}
-\end{table}
+%\begin{table}
+%\center
+%\caption{The population characteristics for PeopleInNews.}
+%\label{tab:ptypedata}
+%\begin{tabular}{|c|c|}
+%\hline
+%\textbf{Occupation} & \textbf{People} \\ \hline
+%Industry People & 743 \\
+%Athletes & 743 \\
+%Politicians & 748 \\
+%Actors/Singers & 744 \\ \hline
+%\end{tabular}
+%\quad
+%\begin{tabular}{|c|c|}
+%\hline
+%\textbf{News Portal} & \textbf{People} \\ \hline
+%WSJ & 594 \\
+%WashPost & 597 \\
+%NY Times & 595 \\
+%HuffPost & 599 \\
+%USA Today & 593 \\ \hline
+%\end{tabular}
+%\vspace{-10pt}
+%\end{table}
 
 \subsection{Experimental Results}
-We evaluate different aspects of the above extraction techniques. 
+We evaluate different aspects of the above extraction techniques. The results reported in Figures 4-8 correspond to a linear cost function with $\alpha=\gamma=1$ and $\beta=5$. The results in Figure 9 correspond to the step cost function described above.
 
 \vspace{3pt}\noindent{\textbf{How does CRUX compare against baselines?}}
 We evaluate the performance of the different extraction algorithms in terms of number of entities extracted for different budgets. The results for Eventbrite and PeopleInNews are shown in \Cref{fig:ebextraction} and \Cref{fig:poextraction} respectively. As shown, CRUX, i.e., GSChao, GSHwang, GSNewR {\em outperform all baselines for at least 30\% across both datasets}. This behavior is expected as our techniques not only exploit the structure of the domain to diversify entity extraction by targeting entities that belong to the tail of the popularity distribution but also optimize the queries for the given budget.
@@ -106,7 +106,8 @@ We compare the performance of RootChao (i.e., the extraction scheme proposed by 
 
 \begin{figure}[h]
 	\begin{center}
-	\includegraphics[clip,scale=0.6]{figs/gain_rounds.eps}
+	\vspace{-10pt}
+	\includegraphics[clip,scale=0.5]{figs/gain_rounds.eps}
 	\caption{The number of events extracted by different algorithms for Eventbrite versus the total number of queries.}
 	\label{fig:rounds}
 	\end{center}
@@ -127,15 +128,26 @@ We next explore how the different versions of CRUX traverse the poset, and how t
    	 \includegraphics[clip,scale=0.32]{figs/queryConfBudget10.eps}
 	\includegraphics[clip,scale=0.32]{figs/queryConfBudget100.eps}
 	\caption{The query configurations used when budget is set at 10 or 100.}\label{fig:queryconf}
+		\vspace{-20pt}
+\end{figure}
+
+\vspace{3pt}\noindent{\textbf{Are exclude lists helpful?}} In \Cref{fig:queryconf} we see that only GSNewR made use of exclude lists. However, we observed a drastically different behavior when using a step cost function. \Cref{fig:exEffect} shows the performance of GSChao with and without the use of exclude lists and compares that with the performance of GSExact that uses exclude lists. The results correspond to PeopleInNews. We see that exploiting exclude lists can yield performance improvements up to 50\% especially for larger budgets.
+
+\begin{figure}[h]
+	\begin{center}
+	\includegraphics[clip,scale=0.5]{figs/exEffect.eps}
+	\caption{Using an exclude list under a step cost function provides significant extraction gains.}
+	\label{fig:exEffect}
+	\end{center}
+	\vspace{-20pt}
 \end{figure}
 
 \vspace{3pt}\noindent{\textbf{How effective are the different estimators at predicting the gain of additional queries?}}
 Finally, we point out that GSNewR was able to outperform GSChao and GSHwang for Eventbrite but the opposite behavior was observed for the PeopleInNews. To further understand the relative performance of GSChao, GSHwang and GSNewR, we evaluate the performance of the gain estimators Chao92Shen, HwangShen and NewRegr at predicting the number of new retrieved events for different query configurations. For Eventbrite, we choose ten random nodes containing more than 5,000 events and for each of them and each of the available query parameter configurations $(k,l)$, we execute ten queries of the form ``Give me $k$ items from node $u \in \hierarchy$ that are not included in an exclude list of size $l$''. As mentioned in \Cref{sec:excludelist} the exclude list for each query is constructed following a randomized approach.  For PeopleInNews, we issue ten queries over all nodes of the input poset for all available query configurations.  We measure the performance of each estimator by considering the absolute relative error between the predicted return and the actual return of the query. 
 
-\Cref{tab:eventesterror} reports the relative error for each of the three estimators averaged over all points under consideration for Eventbrite. As shown, all three estimators perform equivalently with the new regression-based technique slightly outperforming Chao92Shen and HwangShen for certain types of queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. We attribute the improved extraction performance of GSNewR to these improved estimates. The relatively large values for relative errors are justified as the retrieved samples correspond to a very small portion of the underlying population for each of the points. This is a well-known behavior for non-parametric estimators and studied extensively in the species estimation literature~\cite{hwang:2010}. 
-
-\begin{table}
-\small \center
+\begin{table}[h]
+\scriptsize \center
+\vspace{-10pt}
 \caption{Average absolute relative error for estimating the gain of different queries for Eventbrite.}
 \label{tab:eventesterror}
 \begin{tabular}{|c|c|c|c|c|}
@@ -152,8 +164,11 @@ Finally, we point out that GSNewR was able to outperform GSChao and GSHwang for 
 \end{tabular}
 \end{table}
 
+
+\Cref{tab:eventesterror} reports the relative error for each of the three estimators averaged over all points under consideration for Eventbrite. As shown, all three estimators perform equivalently with the new regression-based technique slightly outperforming Chao92Shen and HwangShen for certain types of queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. We attribute the improved extraction performance of GSNewR to these improved estimates. The relatively large values for relative errors are justified as the retrieved samples correspond to a very small portion of the underlying population for each of the points. This is a well-known behavior for non-parametric estimators and studied extensively in the species estimation literature~\cite{hwang:2010}. 
+
 \begin{table}[h]
-\small \center
+\scriptsize \center
 \caption{Average absolute percentage error for estimating the gain of different queries for PeopleInNews.}
 \label{tab:peopleesterror}
 \begin{tabular}{|c|c|c|c|c|}
