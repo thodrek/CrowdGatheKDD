@@ -22,7 +22,7 @@ The proof is provided in \Cref{sec:prth1} and is based on a reduction from the {
 
 Finally, we note that computing the total cost of a policy $\pi$ is easy. However, the gain $\uentities(\pi)$ of a policy $\pi$ is unknown as we do not know in advance the entities corresponding to each node in $\hierarchy$, and hence, needs to be estimated, as we discuss in \Cref{sec:gainestimators}. 
 
-\subsection{Underlying Query Response Model}
+\subsection{Query Response Model}
 \label{sec:sampling}
 To reason about the occurrence of entities as response to specific queries, we need an underlying query response model. Our query response model is based on the notion of {\em popularity}.
 \ifpaper We assume that each underlying entity has an {\em unknown popularity value} with respect to crowd workers. Since workers are likely to return different answers based on how the query is phrased, this popularity can be different for different nodes in $\hierarchy$, and thus, is query-dependent. 
