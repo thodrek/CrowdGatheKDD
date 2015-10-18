@@ -1,0 +1,271 @@
+% THIS IS AN EXAMPLE DOCUMENT FOR VLDB 2012
+% based on ACM SIGPROC-SP.TEX VERSION 2.7
+% Modified by  Gerald Weber <gerald@cs.auckland.ac.nz>
+% Removed the requirement to include *bbl file in here. (AhmetSacan, Sep2012)
+% Fixed the equation on page 3 to prevent line overflow. (AhmetSacan, Sep2012)
+\listfiles
+%\documentclass{sig-alternate}
+\documentclass[conference]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+\usepackage{times}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage[noend]{algorithmic}
+\usepackage{subfigure}
+\usepackage{xspace}
+\usepackage[noend]{algorithmic}
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{epstopdf}
+\usepackage{cleveref}
+\usepackage{soul}
+%\usepackage[font={small,it}]{caption}
+
+\newcommand{\squishlist}{
+   \begin{list}{$\bullet$}
+    {
+      \setlength{\itemsep}{0pt}
+      \setlength{\parsep}{3pt}
+      \setlength{\topsep}{3pt}
+      \setlength{\partopsep}{0pt}
+      \setlength{\leftmargin}{1.5em}
+      \setlength{\labelwidth}{1em}
+      \setlength{\labelsep}{0.5em} } }
+
+\newcommand{\squishend}{
+    \end{list}  }
+
+\renewcommand*\ttdefault{cmvtt}
+
+%\makeatletter
+%\def\@copyrightspace{\relax}
+%\makeatother
+
+
+\newcommand{\argmax}{\operatornamewithlimits{arg\ max}}
+
+\newcommand{\eat}[1]{}
+\newcommand{\todo}[1]{\textcolor{red}{{TODO: #1}}}
+\newcommand{\add}[1]{\textcolor{red}{{ADD: #1}}}
+\newcommand{\note}[1]{\textcolor{blue}{{#1}}}
+\newcommand{\agp}[1]{\textcolor{blue}{{Aditya: #1}}}
+\newcommand{\stitle}[1]{\vspace{0.5em}\noindent\textbf{#1}}
+
+
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{problem}{Problem}
+\newtheorem{reduction}{Reduction}
+\newcommand{\domain}{\mathcal{D}}
+\newcommand{\attributes}{\mathcal{A}_D}
+\newcommand{\hierarchy}{\mathcal{H}_D}
+\newcommand{\attrhierarchy}{\mathcal{H}_A}
+\newcommand{\workers}{\mathcal{W}}
+\newcommand{\uentities}{\mathcal{E}}
+\newcommand{\queryvector}{{\bf Q_S}}
+
+\newif\ifpaper
+\papertrue % comment out to create technical report
+
+\newif\iftr
+%\trtrue % uncomment to create technical report
+
+
+
+\begin{document}
+
+% ****************** TITLE ****************************************
+
+%\title{CrowdGather: Entity Extraction over Structured Domains}
+\title{CRUX: Crowdsourced Data Extraction from the Long Tail - Supplementary Material} 
+%\numberofauthors{3} 
+%
+%\author{
+%	\alignauthor Theodoros Rekatsinas\\
+%            \affaddr{University of Maryland, College Park} 
+%                \email{thodrek@cs.umd.edu}
+%            \alignauthor Amol Deshpande\\
+%            \affaddr{University of Maryland, College Park} 
+%                \email{amol@cs.umd.edu}
+%            \alignauthor Aditya Parameswaran \\
+%            \affaddr{University of Illinois, Urbana-Champaign} 
+%                \email{adityagp@illinois.edu}
+%}
+
+\author{\IEEEauthorblockN{Theodoros Rekatsinas}
+\IEEEauthorblockA{Stanford University\\
+Email: thodrek@cs.stanford.edu}
+\and
+\IEEEauthorblockN{Amol Deshpande}
+\IEEEauthorblockA{University of Maryland, College Park\\
+Email: amol@cs.umd.edu}
+\and
+\IEEEauthorblockN{Aditya Parameswaran}
+\IEEEauthorblockA{University of Illinois, Urbana-Champaign\\
+Email: adityagp@illinois.edu}}
+
+\maketitle
+
+\section{Proof of Theorem 1}
+\label{sec:prth1}
+We prove that the problem of Budgeted Crowd Entity Extraction is NP-hard. The proof is based on a reduction from the unbounded knapsack problem.
+
+\begin{proof}
+The problem is in NP since the size of every feasible querying policy is polynomially bounded in the size of the given instance and the gain and cost of the policy can be computed in polynomial time. We now show that the problem is NP-hard by reducing the unbounded knapsack problem to the problem of budgeted crowd entity extraction. 
+
+The unbounded knapsack problem is a variation of the original knapsack problem that places no upper bound on the number of copies of each kind of item.  In particular, for the decision version of the unbounded knapsack problem we are given $A_1, A_2, \dots, A_n$ items types with positive integer values $r_1, r_2, r_3, \dots, r_n$ and weights $c_1, c_2, c_3, \dots, c_n$. We are also given a budget $\tau_c$ and a value $V$.  The question we seek to answer is if there is a subset of item types $S$ so that if item type $A_i \in S$ is selected $x_i$ times, then $\sum_{A_i \in S} x_i \cdot c_i \leq \tau_c$ and $\sum_{A_i \in S} x_i \cdot r_i \geq V$.
+
+We know show a polynomial reduction $Q(\cdot)$ from the unbounded knapsack to the problem of budgeted crowd entity extraction.  Given the input to knapsack, construct an input for the budgeted crowd entity extraction problem as follows: We consider a domain described by a trivial poset that corresponds to a not directed set of nodes $\{v_1, v_2, \dots, v_n\}$. Each of these nodes $v_i$ corresponds to an item $A_i$. We also set $K^v = \{r_i\}$ and $L^v = \{l^*\}$ with $l^* = \lceil \max (B\frac{r_i}{c_i}) \rceil$. Thus the only allowed query configuration for a node $v_i$ is $q^{v_i}(r_i,E^*)$ such that $|E^*| = l^*$. The latter implies that for each node all retrieved items will be included in the exclude list. Without loss of generality we assume a large population of entities associated with each node. Given this domain and the aforementioned queries, each query $q^{v_i}(r_i,l*)$ at node $v_i$ returns exactly $v_i$ distinct entities every time. Clearly, the reduction described above takes linear time with respect to the number of items in the Knapsack instance. 
+
+Let $X$ be a ``Yes'' instance for the unbounded knapsack problem, with $S$ the set of distinct item type indicators selected and $x_i$ be the number of times each item type $A_i$ was chosen. We now chose the following querying policy for the budgeted crowd entity extraction problem: fix an arbitrary ordering of item type indicators $i \in S$ and issue $x_i$ queries at each node $v_i$. The total cost of the querying policy is $\sum_{i \in S} x_i \cdot c_i = \tau_c$ and the total gain of the policy is $\sum_{i \in S} x_i \cdot r_i = V$, which is a ``Yes'' instance of the decision version of the budgeted crowd entity extraction problem. 
+
+Conversely, if $Q(X)$ is a ``Yes'' instance of the budgeted crowd entity extraction problem, with $S$ the set of indicators corresponding to the queried nodes $v_i$and $x_i$ the number of queries issued at each node, we select to put in the Knapsack $x_i$ copies of the item type $A_i$. It is to see that the total weight of the items is $\sum_{i \in S} x_i \cdot c_i = \tau_c$ and the total value is $\sum_{i \in S} x_i \cdot r_i = V$, which is a ``Yes'' instance of the decision version of unbounded knapsack problem. This completes the reduction. 
+\end{proof}
+
+\section{Proof of Theorem 2}
+\label{sec:prth2}
+The proof for Theorem 2 is provided below.
+\begin{proof}
+To derive the new estimator we make used of the generalized jackknife procedure for species richness estimation~\cite{heltshe1983estimating}. Given two (biased) estimators of $S$, say $\hat{S}_1$ and $\hat{S}_2$, let $R$ be the ratio of their biases:
+\begin{equation}
+R = \frac{E(\hat{S}_1) - S}{E(\hat{S}_2) - S}
+\end{equation}
+By the generalized jackknife procedure, we can completely eliminate the bias resulting from either $\hat{S}_1$ or $\hat{S}_2$ via
+\begin{equation}
+S = G(\hat{S}_1, \hat{S}_2) = \frac{\hat{S}_1 - R\hat{S}_2}{1 - R}
+\label{eq:jknife}
+\end{equation}
+provided the ratio of biases $R$ is known. However, $R$ is unknown and needs to be estimated. 
+
+Let $D_n$ denote the number of unique entities in a unified sample of size $n$. We consider the following two biased estimators of $S$: $\hat{S_1} = D_n$ and $\hat{S}_2 = \sum_{j=1}^n D_{n-1}(j)/n = D_n - f_1/n$ where $D_{n-1}(j)$ is the number of species discovered with the $j$th observation removed from the original sample. Replacing these estimators in \Cref{eq:jknife} gives us:
+\begin{equation}
+S = D_n +\frac{R}{1-R}\frac{f_1}{n}
+\end{equation}
+Similarly, for a sample of increased size $n+m$ we have:
+\begin{equation}
+S = D_{n+m} +\frac{R^{\prime}}{1-R^{\prime}}\frac{f^{\prime}_1}{n+m}
+\end{equation}
+where $R^{\prime}$ is the ratio of the biases and $f^{\prime}_1$ the number of singleton entities for the increased sample. Let $K = \frac{R}{1-R}$ and $K^{\prime} = \frac{R^{\prime}}{1-R^{\prime}}$. Taking the difference of the previous two equations we have:
+\begin{equation}
+D_{n+m} - D_{n} = K\frac{f_1}{n} - K^{\prime}\frac{f^{\prime}_1}{n+m}
+\end{equation}
+Therefore, we have:
+\begin{equation}
+\label{eq:new}
+G = K\frac{f_1}{n} - K^{\prime}\frac{f^{\prime}_1}{n+m}
+\end{equation}
+We need to estimate $K$, $K^{\prime}$ and $f^{\prime}_1$. We start with $f^{\prime}_1$, which denotes the number of singleton entities in the increased sample of size $n+m$. Notice, that $f^{\prime}_1$ is not known since we have not obtained the increased sample yet, so we need to express it in terms of $f_1$, i.e., the number of singletons, in the running sample of size $n$. We have:
+\begin{equation}
+f^{\prime}_1 = G + f_1 - f_1^c
+\end{equation}
+where $f_1^c$ denotes the number of old singleton entities from the sample of size $n$ that appeared in the additional query of size $m$. Let $E_1$ denote the set of singleton entities in the old sample of size $n$. We approximate $f_1^c$ by its expected value:
+\begin{equation}
+\hat{f}_1^c = \sum_{e \in E_1} \Pr[\mbox{e appears in query of size $m$}]
+\end{equation}
+We compute the probability of an old singleton entity appearing in an additional query as follows. Let $p_e$ denote the popularity of entity $e$. As described before, an additional query of size $m$ corresponds to taking a sample of size $m$ from the underlying entity population without replacement. However, $m$ is significantly smaller compared to the size of the underlying population, thus, we can consider a that taking a sample of size $m$ corresponds to taking a sample {\em with replacement}. Following this we have that:
+\begin{equation}
+\Pr[\mbox{e appears in query of size $m$}] = 1 - (1-p_e)^m
+\end{equation}
+Following a standard approach in the species estimation literature we assume that the popularity of retrieving a singleton entity again is the same for all singleton entities. This popularity can be computed using the corresponding Good-Turing estimator considering the running sample. We have:
+\begin{equation}
+\forall e \in E_1, p_e = p_1 = \hat{\theta}(1) = \frac{1}{n}2\frac{f_2}{f_1}
+\end{equation}
+where $f_2$ is the number of entities that appear twice in the sample and $f_1$ is the number of singletons. 
+Eventually we have that:
+\begin{equation}
+\hat{f}_1^c = f_1(1 - (1-p_1)^m)
+\end{equation}
+and
+\begin{equation}
+f^{\prime}_1 = G + f_1(1-p_1)^m
+\end{equation}
+Replacing the last equation in \Cref{eq:new} we have:
+\begin{align}
+&G = K\frac{f_1}{n} - K^{\prime}\frac{G + f_1(1-p_1)^m}{n+m} \nonumber \\
+&G = K\frac{f_1}{n} - K^{\prime}\frac{G}{n+m} - K^{\prime}\frac{f_1(1- P)}{n+m} \nonumber \\
+&G(1 + \frac{K^{\prime}}{n+m}) = K\frac{f_1}{n} - K^{\prime}\frac{f_1(1- P)}{n+m} \nonumber \\
+&G = \frac{1}{(1 + \frac{K^{\prime}}{n+m})}(K\frac{f_1}{n} - K^{\prime}\frac{f_1(1-p_1)^m}{n+m}) \nonumber
+\end{align}
+\end{proof}
+
+\section{Proof of Lemma 1}
+\label{sec:prle1}
+
+The proof for Lemma 1 is provided below.
+
+\begin{proof}
+In the remainder of the proof we will denote $K(n+m)$ as $K^{\prime}$. By definition we have that $K = \frac{\sum_{i=1}^S (1-p_i)^n}{\sum_{i=1}^S p_i(1-p_i)^{n-1}}$ and $K^{\prime} = \frac{\sum_{i=1}^S (1-p_i)^{n+m}}{\sum_{i=1}^S p_i(1-p_i)^{n+m-1}}$. We want to show that:
+
+{\small
+\begin{align}
+&\frac{\sum_{i=1}^S (1-p_i)^{n+m}}{\sum_{i=1}^S p_i(1-p_i)^{n+m-1}} \geq \frac{\sum_{i=1}^S (1-p_i)^n}{\sum_{i=1}^S p_i(1-p_i)^{n-1}} \nonumber \\
+&\sum_{i=1}^S (1-p_i)^{n+m}\sum_{j=1}^S p_j(1-p_j)^{n-1} \geq \sum_{i=1}^S p_i(1-p_i)^{n+m-1}\sum_{j=1}^S (1-p_j)^n\nonumber \\
+&\sum_{i,j:i\prec j}[(1-p_i)^{n+m}p_j(1-p_j)^{n-1} - p_i(1-p_i)^{n+m-1}(1-p_j)^n + \nonumber \\
+& + (1-p_j)^{n+m}p_i(1-p_i)^{n-1} - p_j(1-p_j)^{n+m-1}(1-p_i)^n] \geq 0 \nonumber \\
+%&\sum_{i,j:i\prec j}[(1-p_i)^{n}(1-p_j)^{n-1}p_j((1-p_i)^{m} - (1-p_j)^{m})  + \nonumber \\
+%& - (1-p_j)^{n}p_i(1-p_i)^{n-1}((1-p_i)^{m} - (1-p_j)^{m}) \geq 0 \nonumber \\
+&\sum_{i,j:i\prec j}[(1-p_i)^{n-1}(1-p_j)^{n-1}(p_j-p_i)((1-p_i)^{m} - (1-p_j)^{m}) \geq 0
+\end{align}}
+
+But the last inequality always holds since each term of the summation is positive. In particular, if $p_j \geq p_i$ then
+also $1-p_i \geq 1-p_j$ and if $p_j \leq p_i$ then $1-p_i \leq 1-p_j$.
+\end{proof}
+
+\section{How effective are different estimators at predicting the gain of additional queries?}
+GSNewR was able to outperform GSChao and GSHwang for Eventbrite but the opposite behavior was observed for PeopleInNews. To further understand the relative performance of GSChao, GSHwang and GSNewR, we evaluate the gain estimators Chao92Shen, HwangShen and NewRegr at predicting the number of new retrieved entities for different query configurations. For Eventbrite, we choose ten random nodes containing more than 5,000 events and for each of them and each available query configuration $(k,l)$, execute ten queries. For PeopleInNews, we issue ten queries over all nodes of the input poset for all available query configurations.  We measure the performance of each estimator using the absolute relative error between the predicted return and the actual return of the query.
+
+\begin{table}[h]
+\scriptsize \center
+\vspace{-10pt}
+\caption{Average absolute relative error for estimating the gain of different queries for Eventbrite.}
+\label{tab:eventesterror}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Q. Size $k$} & \textbf{EL. Size $l$} & \textbf{Chao92Shen} & \textbf{HwangShen} & \textbf{NewRegr} \\ \hline
+5 & 0 & 0.470 & 0.500 & 0.390 \\
+5 & 2 & 0.554 & 0.612 & 0.467\\
+10 & 0 & 0.569 & 0.592 & 0.544\\
+10 & 5 & 0.580 & 0.696 & 0.29\\
+20 & 0 & 0.642 & 0.756 &0.471\\
+20 & 5 & 0.510 & 0.60 & 0.436 \\
+20 & 10 & 0.653 & 0.756 & 0.631\\
+\hline
+\end{tabular}
+\end{table}
+
+\Cref{tab:eventesterror} reports the relative error for the three estimators averaged over all points under consideration for Eventbrite. All three estimators perform equivalently with the new regression-based technique slightly outperforming Chao92Shen and HwangShen for certain queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. We attribute the improved extraction performance of GSNewR to these improved estimates. The relatively large error values are justified as the retrieved samples correspond to a very small portion of the underlying population for each of the points. This is a well-known behavior for non-parametric estimators and studied extensively in the species estimation literature~\cite{hwang:2010}.
+
+\begin{table}[h]
+\scriptsize \center
+\caption{Average absolute percentage error for estimating the gain of different queries for PeopleInNews.}
+\label{tab:peopleesterror}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Q. Size $k$} & \textbf{EL. Size $l$} & \textbf{Chao92Shen} & \textbf{HwangShen} & \textbf{NewRegr} \\ \hline
+5 & 0 & 0.295 & 0.299 & 0.228\\
+5 & 2 & 0.163 &  0.156 & 0.144\\
+10 & 0 &  0.306 & 0.305 & 0.277\\
+10 & 5 &  0.341 & 0.349 & 0.293\\
+20 & 0 &  0.359& 0.371 & 0.467 \\
+20 & 5 &  0.2615 & 0.264 & 0.249\\
+20 & 10 & 0.1721 & 0.162 & 0.127\\
+\hline
+\end{tabular}
+\end{table}
+
+\Cref{tab:peopleesterror} shows the results for PeopleInNews. For smaller query sizes NewRegr offers better gain estimates. However, as the query size increases, and hence, a larger portion of the population is observed Chao92Shen outperforms both regression-based techniques. Thus, we are able to explain the performance difference between GSChao and the other two algorithms. Eventually, we have that for sparse domains regression-based techniques result in better performance. However, for dense domains the Chao92Shen estimator results in better performance as a larger portion of the underlying population is sampled.
+
+%\ifpaper
+%\scriptsize
+%\fi
+{\small 
+\bibliographystyle{abbrv}
+\bibliography{crux}
+}
+\end{document}
