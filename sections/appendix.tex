@@ -104,6 +104,7 @@ also $1-p_i \geq 1-p_j$ and if $p_j \leq p_i$ then $1-p_i \leq 1-p_j$.
 \end{proof}
 
 \section{How effective are different estimators at predicting the gain of additional queries?}
+\label{sec:addres}
 GSNewR was able to outperform GSChao and GSHwang for Eventbrite but the opposite behavior was observed for PeopleInNews. To further understand the relative performance of GSChao, GSHwang and GSNewR, we evaluate the gain estimators Chao92Shen, HwangShen and NewRegr at predicting the number of new retrieved entities for different query configurations. For Eventbrite, we choose ten random nodes containing more than 5,000 events and for each of them and each available query configuration $(k,l)$, execute ten queries. For PeopleInNews, we issue ten queries over all nodes of the input poset for all available query configurations.  We measure the performance of each estimator using the absolute relative error between the predicted return and the actual return of the query.
 
 \begin{table}[h]

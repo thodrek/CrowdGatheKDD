@@ -135,7 +135,7 @@ The results reported are averaged over ten runs and correspond to PeopleInNews. 
 \end{figure}
 
 \noindent\textbf{How effective are different estimators at predicting the gain of additional queries?}
-GSNewR was able to outperform GSChao and GSHwang for Eventbrite but the opposite behavior was observed for PeopleInNews. To understand the relative performance of the estimators, we measure their error at predicting the number of new retrieved entities for different query configurations for both Eventbrite and PeopleInNews. We summarize our findings. The detailed results are shown in the supplementary material~\cite{cruxsup}.
+GSNewR was able to outperform GSChao and GSHwang for Eventbrite but the opposite behavior was observed for PeopleInNews. To understand the relative performance of the estimators, we measure their error at predicting the number of new retrieved entities for different query configurations for both Eventbrite and PeopleInNews. We summarize our findings. The detailed results are shown in Appendix~\ref{sec:addres}.
 
 For large-sparse domains, NewRegr slightly outperforming Chao92Shen and HwangShen for certain queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. For smaller, dense domains, such as PeopleInNews, NewRegr offers better gain estimates for small query sizes, but as the query size increases, hence, a larger portion of the population is observed, Chao92Shen outperforms both regression-based techniques. 
 
