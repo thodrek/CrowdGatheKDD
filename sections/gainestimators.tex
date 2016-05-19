@@ -30,10 +30,9 @@ The original Chao estimator relies on the sample coverage $C$ to estimate the nu
 Given a structured domain, the extracted entities for a node $v$ can be obtained either by querying $v$ directly or by indirect information flowing to $v$ by queries at other nodes connected to $v$. We refer to the latter case as {\em indirect sampling}. Eventually, we have two different kinds of samples: (i) those that are extracted by the {\bf entire population} of $v$, and (ii) those that are extracted by sampling {\bf only a part of the population} of $v$. 
 \begin{figure}
 	\begin{center}
-	\includegraphics[clip,scale=0.28]{figs/exampleQuery.eps}	
+	\includegraphics[clip,scale=0.32]{figs/exampleQuery.eps}	
 	\caption{Querying the red node reveals entities from the green nodes.}
 	\label{fig:query}
-	\vspace{-20pt}
 	\end{center}
 \end{figure}
 We use an example (\Cref{fig:query}) using the poset in \Cref{fig:eventslattice}, to illustrate these two cases. Assume a query $q(k,0)$ at node \{EventType X1\} whose result contains entities only from node \{X1,ST2\}. The green nodes in \Cref{fig:query} are nodes for which samples are obtained indirectly without querying them. Notice, that all these nodes are ancestors of \{X1,ST2\}. We have:

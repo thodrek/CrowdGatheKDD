@@ -68,32 +68,29 @@ To construct the second dataset, we used Amazon's Mechanical Turk to extract ``p
 We evaluate different aspects of the extraction techniques. The results reported in Figures 4-8 correspond to a linear cost function with $\alpha=\gamma=1$ and $\beta=5$. The results in Figure 9 correspond to the step cost function described above.
 
 \noindent{\textbf{How does CRUX compare against baselines?}}
-We evaluate the performance of the extraction algorithms using the total entities extracted for different budgets. The results for Eventbrite and PeopleInNews are shown in \Cref{fig:ebextraction} and \Cref{fig:poextraction} respectively. As shown, CRUX, i.e., GSChao, GSHwang, GSNewR, {\em outperforms all baselines for at least 30\% across both datasets}. This is expected as CRUX not only exploits the structure of the domain to diversify entity extraction and target long-tail entities but also optimizes the queries for the given budget. Against the naive baselines Rand, RandL, and BFS, we see that GSChao, GSHwang and GSNewR extract more than 200\% more entities for the sparse Eventbrite domain and around 100\% more entities for small budgets and 54\% for larger ones when considering the dense PeopleInNews. For Eventbrite and a budget of \$50 all CRUX schemes extracted more than 600 events while Rand and RandL extracted 1.1 and 0.2 events and BFS extracted 207.7 events, an improvement of over 180\%.
+We evaluate the performance of the extraction algorithms using the total entities extracted for different budgets. The results for Eventbrite and PeopleInNews are shown in \Cref{fig:ebextraction} and \Cref{fig:poextraction} respectively. As shown, CRUX, i.e., GSChao, GSHwang, GSNewR, {\em outperforms all baselines for at least 30\% across both datasets}. This is expected as CRUX not only exploits the structure of the domain to diversify entity extraction and target even less-popular entities but also optimizes the queries for the given budget. Against the naive baselines Rand, RandL, and BFS, we see that GSChao, GSHwang and GSNewR extract more than 200\% more entities for the sparse Eventbrite domain and around 100\% more entities for small budgets and 54\% for larger ones when considering the dense PeopleInNews. For Eventbrite and a budget of \$50 all CRUX schemes extracted more than 600 events while Rand and RandL extracted 1.1 and 0.2 events and BFS extracted 207.7 events, an improvement of over 180\%.
 
 Against RootChao, we see that GSChao, GSHwang and GSNewR, are able to retrieve up to 30\% more entities for Eventbrite and 400\% more entities for the PeopleInNews dataset. This difference is because the gain achieved by RootChao saturates at a faster rate than GSChao, GSHwang and GSNewR as the cost increases. This is because, RootChao issues queries at the root of the poset, and hence, it is not able to extract entities belonging to the long tail. For PeopleInNews, RootChao performs poorly even compared to the naive baselines Rand, RandL and BFS. Again, this is due to the skew of the popularity distribution.
 
-\begin{figure}[h]
+\begin{figure}
 \begin{center}
-        \subfigure{\includegraphics[trim=120 0 0 0,scale=0.40]{figs/ebExtractionNotOpt.eps} \label{fig:ebextraction}}
-        \subfigure{\includegraphics[trim=80 0 100 0,scale=0.40]{figs/poExtractionNotOpt.eps} \label{fig:poextraction}}
-        \subfigure{\includegraphics[scale=0.30]{figs/notoptlegend.pdf}}
+        \subfigure{\includegraphics[trim=120 0 0 0,scale=0.45]{figs/ebExtractionNotOpt.eps} \label{fig:ebextraction}}
+        \subfigure{\includegraphics[trim=80 0 100 0,scale=0.45]{figs/poExtractionNotOpt.eps} \label{fig:poextraction}}
+        \subfigure{\includegraphics[scale=0.6]{figs/notoptlegend.pdf}}
 \end{center}
-\vspace{-5pt}
 \caption{A comparison of the CRUX techniques (GSChao, GSHwang, and GSNewR) against baselines for (a) Eventbrite and (b) PeopleInNews.}
 \label{fig:resultsextr}
-\vspace{-10pt}
 \end{figure}
 
 \vspace{3pt}\noindent{\textbf{How does CRUX compare against a near-optimal policy discovery algorithm?}}
 We evaluate the different variations of CRUX, i.e., GSChao, GSHwang and GSNewR, against the near-optimal querying policy discovery algorithm GSExact. The results are shown in \Cref{fig:ebextractionopt} and \Cref{fig:poextractionopt}. For the sparse Eventbrite, we observe that for smaller budgets our proposed techniques perform comparably to GSExact that has ``perfect information'' about the gain of each query, typically demonstrating a performance gap of less than 10\%. For larger budgets this gap increases to 25\%. Note that our estimators have access to few samples and sparse information; the fact that we are able to get this close to GSExact is notable. Finally, for PeopleInNews, our techniques present an increased performance gap compared to GSExact. Nevertheless the performance drop is at most 50\%. 
 
-\begin{figure}[h]
+\begin{figure}
 \begin{center}
-        \subfigure{\includegraphics[trim=120 0 0 0,scale=0.40]{figs/ebExtractionOpt.eps} \label{fig:ebextractionopt}}
-        \subfigure{\includegraphics[trim=80 0 100 0,scale=0.40]{figs/poExtractionOpt.eps} \label{fig:poextractionopt}}
-        \subfigure{\includegraphics[scale=0.30]{figs/optlegend.pdf}}
+        \subfigure{\includegraphics[trim=120 0 0 0,scale=0.45]{figs/ebExtractionOpt.eps} \label{fig:ebextractionopt}}
+        \subfigure{\includegraphics[trim=80 0 100 0,scale=0.45]{figs/poExtractionOpt.eps} \label{fig:poextractionopt}}
+        \subfigure{\includegraphics[scale=0.6]{figs/optlegend.pdf}}
 \end{center}
-\vspace{-5pt}
 \caption{A comparison of the CRUX techniques (GSChao, GSHwang, and GSNewR) against a near-optimal algorithm for (a) Eventbrite and (b) PeopleInNews.}
 \label{fig:resultsextr}
 \vspace{-10pt}
@@ -102,27 +99,25 @@ We evaluate the different variations of CRUX, i.e., GSChao, GSHwang and GSNewR, 
 \noindent{\textbf{How do the different techniques compare with respect to the total number of queries issued during extraction?}}
 We compare RootChao against the CRUX algorithms GSChao, GSHwang and GSNewR with respect to the {\em total number of queries issued during extraction}. This evaluation metric is a surrogate for the overall latency of the crowd-extraction process. \Cref{fig:rounds} shows the results for a run for Eventbrite and a budget of \$80. As shown, {\em RootChao requires almost up to 200\% more queries} to extract the same number of entities as our techniques, thus, exhibiting significantly larger latency compared to GSChao, GSHwang and GSNewR.
 
-\begin{figure}[h]
+\begin{figure}
 	\begin{center}
-	\vspace{-10pt}
-	\includegraphics[clip,scale=0.4]{figs/gain_rounds.eps}
+	\includegraphics[clip,scale=0.5]{figs/gain_rounds.eps}
 	\caption{The number of events extracted by different algorithms for Eventbrite versus the total number of queries.}
 	\label{fig:rounds}
 	\end{center}
-	\vspace{-5pt}
 \end{figure}
 
 \noindent{\textbf{How do different CRUX versions traverse the poset and use query configurations?}}
 The results reported are averaged over ten runs and correspond to PeopleInNews. We first measure how many queries each algorithm issues at various levels of the poset. In Figure~\ref{fig:level}, we plot the number of queries (per level) issued by our algorithms when the budget is set to 10 and 100 respectively. For a small budget, all algorithms prefer queries at higher levels. The inner nodes are preferred and only a small number of queries is issued at the root (i.e., level one) of the poset. This is justified if we consider that due to their popularity, certain entities are repeatedly extracted, thus, leading to a lower gain. As the budget increases, we see that all algorithms tend to consider more specialized queries at deeper levels of the poset. It is interesting to observe that all algorithms issue the majority of their queries at level two nodes, while GSExact, which has perfect information, focuses mostly on leaf nodes. Thus, our techniques could benefit from being more aggressive at traversing the poset and reaching deeper levels; overall, our techniques may end up being more conservative to cater to a larger space of posets and popularity distributions. In Figure~\ref{fig:queryconf}, we plot the query configurations chosen by our algorithms when the budget is set to 10 and 100. GSExact always prefers queries with $k = 20$ and $l = 0$ for both small and large budgets. On the other hand, our algorithms issue more queries of smaller size when operating under a limited budget and prefer queries of larger size for larger budgets. GSNewR was the only one issuing queries with exclude lists of different sizes, thus, exploiting the rich diversity of query interfaces.
 
 
-\begin{figure}[h]
+\begin{figure}
     \includegraphics[clip,scale=0.32]{figs/levelBudget10.eps}
 	\includegraphics[clip,scale=0.32]{figs/levelBudget100.eps}
 	\caption{The number of queries issued at different levels when budget is set at 10 or 100.}\label{fig:level}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
    	 \includegraphics[clip,scale=0.32]{figs/queryConfBudget10.eps}
 	\includegraphics[clip,scale=0.32]{figs/queryConfBudget100.eps}
 	\caption{The query configurations used when budget is set at 10 or 100.}\label{fig:queryconf}
@@ -131,13 +126,12 @@ The results reported are averaged over ten runs and correspond to PeopleInNews. 
 
 \noindent{\textbf{Are exclude lists helpful?}} In \Cref{fig:queryconf} we see that only GSNewR made use of exclude lists. However, we observed a drastically different behavior when using a step cost function. \Cref{fig:exEffect} shows the performance of GSChao with and without the use of exclude lists and compares that with the performance of GSExact that uses exclude lists. The results correspond to PeopleInNews. Exploiting exclude lists can yield performance improvements up to 50\% especially for larger budgets.
 
-\begin{figure}[h]
+\begin{figure}[t]
 	\begin{center}
 	\includegraphics[clip,scale=0.5]{figs/exEffect.eps}
 	\caption{Using an exclude list under a step cost function provides significant extraction gains.}
 	\label{fig:exEffect}
 	\end{center}
-	\vspace{-10pt}
 \end{figure}
 
 \noindent\textbf{How effective are different estimators at predicting the gain of additional queries?}

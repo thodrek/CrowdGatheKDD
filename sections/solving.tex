@@ -35,7 +35,7 @@ We proceed in rounds and at each round select a query configuration $q$. Let $n_
 We now introduce a multi-round algorithm for solving the budgeted entity enumeration problem (Algorithm~\ref{algo:overall}). It takes as input the poset $\hierarchy$ , a set $K$ of query size assignments, a set $L$ of exclude list size assignments and a budget $\tau_c$. The algorithm also assumes access to an oracle providing $r(q)$ and $\sigma(q,t)$ --- $t$ denotes the round count ---  which characterize the upper gain of $q$, and an oracle providing the query cost $c(q)$. The algorithm has also access to method ${\sf ActiveQueryConf}$ (see \Cref{sec:badactions}) returning the allowed configurations per round.
 
 \begin{algorithm}[h]
-\footnotesize\caption{Multi-round Extraction Algorithm}
+\small\caption{Multi-round Extraction Algorithm}
 \label{algo:overall}
 \begin{algorithmic}[1]
 \STATE {\bf Input:} $\hierarchy$: the hierarchy describing the entity domain; $K$: set of valid query size assignments; $L$: set of valid exclude-list size assignments; $\tau_c$: budget; $r,\sigma$: value oracle access to upper-bounded gain for different query configurations; $c$: value oracle access to the query configuration costs;
