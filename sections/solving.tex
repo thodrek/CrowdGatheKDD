@@ -35,7 +35,7 @@ We proceed in rounds and at each round select a query configuration $q$. Let $n_
 We now introduce a multi-round algorithm for solving the budgeted entity enumeration problem (Algorithm~\ref{algo:overall}). It takes as input the poset $\hierarchy$ , a set $K$ of query size assignments, a set $L$ of exclude list size assignments and a budget $\tau_c$. The algorithm also assumes access to an oracle providing $r(q)$ and $\sigma(q,t)$ --- $t$ denotes the round count ---  which characterize the upper gain of $q$, and an oracle providing the query cost $c(q)$. The algorithm has also access to method ${\sf ActiveQueryConf}$ (see \Cref{sec:badactions}) returning the allowed configurations per round.
 
 \begin{algorithm}[h]
-\small\caption{Multi-round Extraction Algorithm}
+\footnotesize\caption{Multi-round Extraction Algorithm}
 \label{algo:overall}
 \begin{algorithmic}[1]
 \STATE {\bf Input:} $\hierarchy$: the hierarchy describing the entity domain; $K$: set of valid query size assignments; $L$: set of valid exclude-list size assignments; $\tau_c$: budget; $r,\sigma$: value oracle access to upper-bounded gain for different query configurations; $c$: value oracle access to the query configuration costs;
@@ -78,7 +78,7 @@ Our algorithm for determining the set of active queries for each round is shown 
 The algorithm proceeds as follows: If the running set of active queries is empty (Ln. 3), i.e., if we have issued no queries previously, the set of active query configurations is initialized to contain all potential configurations $(k,l)$ for the root of the poset $\hierarchy$ (Ln. 6). Otherwise, the algorithm first adds all configurations for the direct descendants of node $v^*$ to $\mathcal{Q}_{old}$ (Ln. 9 - 11) and then removes any bad configurations from the new set $\mathcal{Q}_{new}$ (Ln.13-16). The algorithm terminates by returning the set $\mathcal{Q}_{new}$.
 
 \begin{algorithm}[h]
-\small\caption{ActiveQueryConf}
+\footnotesize\caption{ActiveQueryConf}
 \label{algo:updateactions}
 \begin{algorithmic}[1]
 \STATE {\bf Input:} $\hierarchy$: the hierarchy describing the entity domain; $\mathcal{Q}_{old}$: the running set of active query configurations; $v^*$: the node in $\hierarchy$ associated with the last query; $K$: set of valid query size assignments; $L$: set of valid exclude-list size assignments; $t$: running round counter; $r,\sigma$: value oracle access to upper-bounded gain for different query configurations;

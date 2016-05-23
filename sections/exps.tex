@@ -105,6 +105,7 @@ We compare RootChao against the CRUX algorithms GSChao, GSHwang and GSNewR with 
 	\caption{The number of events extracted by different algorithms for Eventbrite versus the total number of queries.}
 	\label{fig:rounds}
 	\end{center}
+	\vspace{-20pt}
 \end{figure}
 
 \noindent{\textbf{How do different CRUX versions traverse the poset and use query configurations?}}
@@ -128,16 +129,59 @@ The results reported are averaged over ten runs and correspond to PeopleInNews. 
 
 \begin{figure}[t]
 	\begin{center}
-	\includegraphics[clip,scale=0.5]{figs/exEffect.eps}
+	\includegraphics[clip,scale=0.45]{figs/exEffect.eps}
 	\caption{Using an exclude list under a step cost function provides significant extraction gains.}
 	\label{fig:exEffect}
 	\end{center}
+	\vspace{-20pt}
 \end{figure}
 
 \noindent\textbf{How effective are different estimators at predicting the gain of additional queries?}
-GSNewR was able to outperform GSChao and GSHwang for Eventbrite but the opposite behavior was observed for PeopleInNews. To understand the relative performance of the estimators, we measure their error at predicting the number of new retrieved entities for different query configurations for both Eventbrite and PeopleInNews. We summarize our findings. The detailed results are shown in Appendix~\ref{sec:addres}.
+GSNewR was able to outperform GSChao and GSHwang for Eventbrite but the opposite behavior was observed for PeopleInNews. To understand the relative performance of the estimators, we measure their error at predicting the number of new retrieved entities for different query configurations for both Eventbrite and PeopleInNews.
+In summary, for large and sparse domains, NewRegr slightly outperforms Chao92Shen and HwangShen for certain queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. For smaller, dense domains, such as PeopleInNews, NewRegr offers better gain estimates for small query sizes, but as the query size increases, hence, a larger portion of the population is observed, Chao92Shen outperforms both regression-based techniques. The detailed results are presented next.
 
-For large-sparse domains, NewRegr slightly outperforming Chao92Shen and HwangShen for certain queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. For smaller, dense domains, such as PeopleInNews, NewRegr offers better gain estimates for small query sizes, but as the query size increases, hence, a larger portion of the population is observed, Chao92Shen outperforms both regression-based techniques. 
+For Eventbrite, we choose ten random nodes containing more than 5,000 events and for each of them and each available query configuration $(k,l)$, execute ten queries. For PeopleInNews, we issue ten queries over all nodes of the input poset for all available query configurations.  We measure the performance of each estimator using the absolute relative error between the predicted return and the actual return of the query.
+
+\begin{table}[h]
+\center
+\caption{Average absolute relative error for estimating the gain of different queries for Eventbrite.}
+\label{tab:eventesterror}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Q. Size $k$} & \textbf{EL. Size $l$} & \textbf{Chao92Shen} & \textbf{HwangShen} & \textbf{NewRegr} \\ \hline
+5 & 0 & 0.470 & 0.500 & 0.390 \\
+5 & 2 & 0.554 & 0.612 & 0.467\\
+10 & 0 & 0.569 & 0.592 & 0.544\\
+10 & 5 & 0.580 & 0.696 & 0.29\\
+20 & 0 & 0.642 & 0.756 &0.471\\
+20 & 5 & 0.510 & 0.60 & 0.436 \\
+20 & 10 & 0.653 & 0.756 & 0.631\\
+\hline
+\end{tabular}
+\end{table}
+
+\Cref{tab:eventesterror} reports the relative error for the three estimators averaged over all points under consideration for Eventbrite. All three estimators perform equivalently with the new regression-based technique slightly outperforming Chao92Shen and HwangShen for certain queries. For example, for $k = 10, l = 5$, Chao92Shen has a relative error of 0.58, HwangShen had a relative error of 0.7, and NewRegr had a relative error of 0.29. We attribute the improved extraction performance of GSNewR to these improved estimates. The relatively large error values are justified as the retrieved samples correspond to a very small portion of the underlying population for each of the points. This is a well-known behavior for non-parametric estimators and studied extensively in the species estimation literature~\cite{hwang:2010}.
+
+\begin{table}[h]
+\center
+\caption{Average absolute percentage error for estimating the gain of different queries for PeopleInNews.}
+\label{tab:peopleesterror}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Q. Size $k$} & \textbf{EL. Size $l$} & \textbf{Chao92Shen} & \textbf{HwangShen} & \textbf{NewRegr} \\ \hline
+5 & 0 & 0.295 & 0.299 & 0.228\\
+5 & 2 & 0.163 &  0.156 & 0.144\\
+10 & 0 &  0.306 & 0.305 & 0.277\\
+10 & 5 &  0.341 & 0.349 & 0.293\\
+20 & 0 &  0.359& 0.371 & 0.467 \\
+20 & 5 &  0.2615 & 0.264 & 0.249\\
+20 & 10 & 0.1721 & 0.162 & 0.127\\
+\hline
+\end{tabular}
+\end{table}
+
+\Cref{tab:peopleesterror} shows the results for PeopleInNews. For smaller query sizes NewRegr offers better gain estimates. However, as the query size increases, and hence, a larger portion of the population is observed Chao92Shen outperforms both regression-based techniques. Thus, we are able to explain the performance difference between GSChao and the other two algorithms. Eventually, we have that for sparse domains regression-based techniques result in better performance. However, for dense domains the Chao92Shen estimator results in better performance as a larger portion of the underlying population is sampled.
+
 
 
 
