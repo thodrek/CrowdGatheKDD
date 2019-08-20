@@ -1,21 +1,51 @@
-%!TEX root = ../crux.tex
+%!TEX root = ../crux-sigconf.tex
 
 \section{Introduction}
 \label{sec:intro}
-Structured data repositories, such as knowledge bases, taxonomies, and hierarchies, enable many end-user applications including keyword search, product catalogs, event detection and recommender systems in a variety of companies, ranging from Google~\cite{singhal2012introducing}, Microsoft~\cite{cheng2010fuzzy}, and Yahoo~\cite{woo}, to 
-Walmart~\cite{Deshpande:2013:BMU:2463676.2465297} and Amazon~\cite{amazon-product}. The majority of these repositories are constructed using mostly-automated extraction schemes that target popular and easily accessible text and web corpora. As a result, they contain information primarily on {\em head data}, i.e., popular entities, facts, and their attributes, comprising a tiny portion of the total entities.
+Structured data repositories, such as knowledge bases, taxonomies, and hierarchies, enable many end-user applications including keyword search, product catalogs, event detection and recommender systems in a variety of companies, such as Google~\cite{singhal2012introducing}, Microsoft~\cite{cheng2010fuzzy}, Yahoo~\cite{woo},
+Walmart~\cite{Deshpande:2013:BMU:2463676.2465297}, and Amazon~\cite{amazon-product}. The majority of these repositories are constructed using automated extraction schemes that target popular text and web corpora. As a result, they contain information primarily on {\em head data}, i.e., popular entities and their attributes, 
+comprising a tiny fraction of all entities.
+There has therefore been increasing interest
+in augmenting this 
+with information about the so called {\em long-tail},
+not-so-popular entities, to reduce the sparsity of present-day structured
+data repositories.
+Crowdsourcing is 
+a natural solution to extract these entities;
+examples of such efforts include Google's Guides\footnote{https://www.google.com/local/guides/}, and Facebook's Professional Services\footnote{https://www.facebook.com/services/}. In fact, 
+a recent study reports that a number of companies use
+crowdsourcing for entity extraction~\cite{DBS-044}.
 
-Due to the sparsity of present structured data repositories, lately, there has been an increasing interest in augmenting these with information about entities from less popular verticals (referred to as {\em long-tail} data) such as local-businesses or real-world events. As information about long-tail entities may not be accessible on the web or third-party repositories, {\em crowdsourcing} is increasingly adopted as a solution to first identify long-tail entities and then collect information about them. Examples of such efforts include Google's Guides\footnote{https://www.google.com/local/guides/}, and Facebook's Professional Services\footnote{https://www.facebook.com/services/}. Finally, more than half of the participants in a recent study~\cite{DBS-044} report using crowdsourcing for entity extraction.
+Motivated by the aforementioned applications, 
+we study {\em crowdsourced entity extraction}, i.e., 
+the problem of collecting entities 
+by asking crowd workers to {\em list entities} 
+from a domain of interest. 
+Recent work from Trushkowsky 
+et al.~\cite{trushkowsky:2013,DBLP:journals/cacm/TrushkowskyKS16} 
+has studied crowdsourced entity extraction using fixed questions like ``give me another entity'', extending species 
+estimation techniques to assess the degree of completeness
+of their extraction. 
+Unfortunately, due to the cost of human labor and the inherent redundancy in the answers of crowd workers, crowdsourced entity extraction using this fixed form of questions
+can become highly impractical. 
+We use a small pilot experiment on Amazon's Mechanical Turk~\cite{mturk} to illustrate this. 
 
-Motivated by applications as the ones described above we study {\em crowdsourced entity extraction}, i.e., the problem of collecting entities for a given domain by asking crowd workers to {\em list entities} from a domain of interest. Due to the cost involved in human labor and the inherent redundancy in the answers of crowd workers, crowdsourced entity extraction can become highly impractical. In this paper we study techniques for efficient crowdsourced data extraction under monetary budget constraints where our goal is to maximize the number of distinct entities extracted with the minimal number of queries against crowd workers. We use a small pilot experiment on Amazon's Mechanical Turk~\cite{mturk} to illustrate why naive crowdsourced entity extraction can be impractical, and to motivate our approach. 
-
-\begin{example}
-\color{red}We focused on extracting people from the news and asked workers to list people of different occupations mentioned in five major US news portals during the period of a single day. In particular, we asked workers to provide us with ``Actors/Singers'', ``Athletes'', and ``Politicians'' listed in ``The New York Times'',  ``Huffington Post'', ``The Washington Post'', ``USA  Today'' and ``The Wall Street Journal''. For each newspaper we provided a link to the newspapers home webpage and for each (occupation, news portal) combination, e.g., ``Athletes mentioned in NY Times'', we asked 30 distinct workers to provide us with five entities, leading to 150 extractions per combination. The issued queries are fixed and do not take into account entities extracted by previous queries.
-\end{example}
-\vspace{-5pt}
+\begin{example}\label{ex:people-news}
+Our goal was to extract 
+people from the news. 
+We asked workers to list people 
+of different occupations mentioned in five major US news portals during the period of a single day. In particular, we asked workers to provide us with ``Actors/Singers'', ``Athletes'', and ``Politicians'' listed in ``The New York Times'',  ``Huffington Post'', ``The Washington Post'', ``USA  Today'' and ``The Wall Street Journal''. 
+For each newspaper we provided a 
+link to the newspaper's homepage 
+and for each (occupation, news portal) 
+combination, e.g., ``Athletes mentioned in NY Times'', 
+we asked 30 distinct workers to provide us with five entities, leading to 150 extractions per combination. %The issued queries are fixed and do not take into account entities extracted by previous queries.
 \begin{table}
+\vspace{-5pt}
 \center
+\small
 \caption{Extracting people from the news. Percentage of entities reported by at least two different workers for each $\langle$occupation, news portal$\rangle$.}
+\vspace{-8pt}
 \label{tab:duplicates}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -27,38 +57,53 @@ News Portal & {\bf Actors/Singer}s & {\bf Athletes} & \textbf{Politicians}\\ \hl
 {\bf WSJ} & 42\% & 77\% & 57\% \\
 \hline
 \end{tabular}
+\vspace{-5pt}
 \end{table}
 
-\Cref{tab:duplicates} shows the percentage of entities that were provided by at least two different workers for different $<$occupation, news portal$>$ combinations. As shown, on average, more than half of the extracted entities were reported by at least two workers, while there are cases where the percentage of duplicated entities was as high as 77\%. This means that 77\% of the cost (in compensating workers for their answers) is simply wasted. The above static querying strategy that issues the same query repeatedly to crowd workers leads to a large number of {\em repeated extractions of the popular entities, and low coverage of the less-popular entities}. In fact, the not-so-popular entities may only be extracted after a very long time (translating to high cost and effort) or may never be extracted at all. It is exactly this abundance of duplicate extractions that can make crowdsourced data extraction impractical.
+\Cref{tab:duplicates} shows the percentage of entities that were provided by at least two different workers for different $<$occupation, news portal$>$ combinations. As shown, on average, more than half of the extracted entities were reported by at least two workers, while there are cases where the percentage of duplicate entities was as high as 77\%. This means that {\em at least 77\%} of the cost (in compensating workers for their answers) is simply wasted. Thus, a static or fixed 
+querying strategy that issues the same question repeatedly to crowd workers,
+such as in Trushkowsky et al.~\cite{trushkowsky:2013}, 
+leads to a large number of {\em repeated extractions of the popular entities, and low coverage of the less-popular entities}. In fact, the not-so-popular entities may only be extracted after a very long time (translating to high cost and effort) or may never be extracted at all. {\bf \em It is exactly this abundance of duplicate extractions that can make fixed-query crowdsourced data extraction impractical}.
+\end{example}
 
-\noindent {\bf Our approach.} To limit duplicate extractions we leverage two insights that allow us to issue {\em fine-grained queries}, i.e., queries that target only a subspace of the entity-domain, to the crowd:
+\noindent {\bf Our Approach and Challenges.}
+Our goal is to reduce redundancy in crowdsourced data extraction
+by leveraging two key insights
+that allow us to {\em adaptively issue fine-grained queries}, 
+i.e., queries that target only a subspace of the entity-domain, 
+to the crowd:
 
-\noindent {\bf {\em Exploit Structure.}}
-Most domains that one may choose to extract entities from are {\em structured}, i.e., the entities in the domains are associated with a collection of attributes, each of which typically exhibits hierarchical structure. One can leverage the existence of such attributes to choose queries from a much richer space, considering all combinations of values for these attributes. For example, if we had a hierarchy associated with athletes in our pilot experiment, we could leverage that to extract tennis players, marathon runners, or javelin throwers, by asking workers questions like {\em provide a marathon runner mentioned in the New York Times today}. It is easy to see that targeted queries which focus on disjoint parts of the underlying entity domain can drastically limit the number of duplicate extractions.
+\noindent {\bf {\em 1) Exploit Structure to Partition the Search Space.}}
+Most domains that one may choose to extract entities from are {\em structured}, i.e., domains are associated with a collection of attributes, each of which typically exhibits hierarchical structure. One can leverage the existence of such attributes to choose queries from a much richer space, considering all combinations of values for these attributes. For example, if we had a hierarchy associated with athletes in our pilot experiment, we could leverage that to {\em partition our extraction space} and extract tennis players, marathon runners, or javelin throwers, by asking workers questions like {\em provide a marathon runner mentioned in the New York Times today}. It is easy to see that targeted queries which focus on disjoint partitions of the underlying entity domain can drastically limit duplicate extractions.
 
-\noindent {\bf {\em Use Exclude Lists.}} We can also extend typical crowd queries to include an {\em exclude list}, e.g., ``list a person in the New York Times that is not Donald Trump''.  Excluding popular entities can help us identify new distinct entities much faster.
+\noindent {\bf {\em 2) Use Exclude Lists.}} We can also extend typical crowd queries to include an {\em exclude list}, e.g., ``list a person in the New York Times that is not Donald Trump''.  Excluding popular entities can help us identify new distinct entities much faster.
 
-Fine-grained queries enable us to design {\em adaptive querying strategies} that aim to limit the number of duplicate extractions. We refer to a querying strategy as adaptive if it analyzes the entities returned in previously issued queries to dynamically adapt further queries in two ways: (i) either by limiting their scope to a subdomain of the overall entity domain, thus, exploiting the structure of the entity domain, or (ii) by introducing an exclude list to them to prevent already extracted entities from bing extracted again. To guarantee that our methods will lead to efficient crowdsourced entity extraction techniques, we study a budgeted version of the problem, where our goal is to identify the adaptive querying strategy that maximizes the number of distinct retrieved entities for a given budget.
+ \noindent
+Overall, fine-grained queries 
+of the form above 
+enable us to design {\em adaptive querying strategies} that aim to limit the number of duplicate extractions. We refer to a querying strategy as adaptive if it analyzes the entities returned in previously issued queries to dynamically adapt further queries in two ways: (i) either by limiting their scope to a subdomain of the overall entity domain, thus, exploiting the structure of the entity domain, or (ii) by introducing an exclude list to them to prevent already extracted entities from bing extracted again. To guarantee that our methods will lead to efficient crowdsourced entity extraction techniques, we study a budgeted version of the problem, where our goal is to identify the adaptive querying strategy that maximizes the number of distinct retrieved entities for a given budget.
 
-Designing adaptive querying policies comes with new challenges. The main question we seek to address is: {\em Which is the most profitable query to issue next?}. Given a cost model for crowd queries, we need to {\em estimate the gain} of a new query, i.e., estimate how many new entities would be extracted from a query in expectation, given the already extracted data. In addition, we also need to deal with the {\em sparsity} and the {\em exponential size} of the query space. Many of the attribute combinations are likely to be empty, i.e., the corresponding queries are likely to have no answers; avoiding such queries is essential to keep monetary cost low. Finally, we need to deal with the {\em interrelationships} across queries. Many of the queries are {\em coupled}. For example, the results from a few queries to ``list an athlete in today's New York Times'' can inform whether issuing queries to ``list a Baseball player in today's New York Times'' is useful or not.  Thus, identifying the right order to ask queries is highly important.
+Unfortunately, designing adaptive querying policies comes with new challenges. The main question we seek to address is: {\em what is the most profitable query to issue next?} Given a cost model for crowd queries, we need to {\em estimate the gain} of a new query, i.e., estimate how many new entities would be extracted from a query in expectation, given the already extracted data. In addition, we also need to deal with the {\em sparsity} and the {\em exponential size} of the query space. Many of the attribute combinations are likely to be empty, i.e., the corresponding queries are likely to have no answers (e.g., there may not be few, if any, javelin throwers living in New York); avoiding such queries is essential to keep monetary cost low. Finally, we need to deal with the {\em interrelationships} across queries. Many of the queries are {\em coupled}. For example, the results from a few queries to ``list an athlete in today's New York Times'' can inform whether issuing queries to ``list a Baseball player in today's New York Times'' is useful or not.  Thus, identifying the right order to ask queries is highly important. Overall, we want to maximize the number of distinct entities extracted with the minimal number of queries against crowd workers. 
 
-To address the above challenges we introduce CRUX, an algorithmic framework for effective and efficient CRowdsoUrced data eXtraction under budget constraints. We propose a collection of  statistical techniques for estimating the {\em gain} of further queries, i.e., the number of new distinct entities extracted, for any attribute combination. Our techniques make use of the extracted entities in previously issued queries to derive accurate estimates for new queries. Eventually we covert the problem of budgeted crowdsourced entity extraction to an adaptive optimization problem to detect the optimal queries to be issued against the crowd.
+To address the above challenges we introduce CRUX, a framework for efficient CRowdsoUrced data eXtraction under budget constraints. We propose a collection of  statistical techniques for estimating the {\em gain} of further queries, i.e., the number of new distinct entities extracted, for any attribute combination. Our techniques make use of the extracted entities in previously issued queries to derive accurate estimates for new queries. Eventually we covert the problem of budgeted crowdsourced entity extraction to an adaptive optimization problem to detect the optimal queries to be issued against the crowd.
 
 \noindent
-{\bf Prior Work.} Several methods have been proposed for crowdsourced entity extraction. Recently, Trushkowsky et al.~\cite{trushkowsky:2013}
-described the use of species estimation techniques to estimate the completeness of extracted entities from the crowd. 
+{\bf Prior Work.} As mentioned previously, Trushkowsky et al.~\cite{trushkowsky:2013,DBLP:journals/cacm/TrushkowskyKS16}
+describe the use of species estimation techniques to estimate the completeness of extracted entities from the crowd. 
 Other work~\cite{amsterdamer:2014} has studied the problem of leveraging crowd workers to provide recommendations to users by listing entities relevant to user queries. These papers ask human workers to ``list one more entity'', without leveraging structure or an exclude list. For example, if we consider the task of enumerating all people mentioned in today's issue of the New York Times, previous techniques focus on issuing the query ``list one person in today's New York Times'' repeatedly against the crowd until a certain desired degree of completeness is achieved.
 However, all these approaches suffer from the same problem identified earlier: severe wasted cost,
 with only the popular entities being extracted repeatedly. As we will see in \Cref{sec:exps}, there are scenarios where the existing state-of-the-art methods focus only on the head entities and are only able to retrieve less than 20\% of the total entities for a fixed budget while our techniques can extract more than 75\% of the total entities.
+Other recent work employs adaptive querying for filtering, as opposed to  extraction, problems~\cite{DBLP:conf/hcomp/LanRST17}.
+We discuss other related work in \Cref{sec:related}.
 
 \noindent
 {\bf Contributions.} Our main contributions are:
 \squishlist
-\item {\em Formalization and Characterization of Hardness.} We formalize the notion of {\em generalized entity extraction queries} that can also include an {\em exclude list}. Such queries are of the type ``List $k$ entities with attributes $\bar{X}$ that belong in domain $D$ and are not in $\{A, B, ...\}$''. We also provide statistical techniques to estimate the gain, i.e., the number of newly extracted distinct entities, for generalized queries. We prove that the problem of budgeted crowdsourced entity extraction is NP-Hard. 
+\item {\em Formalization and Characterization of Hardness.} We formalize the notion of {\em generalized entity extraction queries} that can also include an {\em exclude list}. Such queries are of the type ``List $k$ entities with attributes $\bar{X}$ that belong in domain $D$ and are not in $\{A, B, ...\}$''. We also provide statistical techniques to estimate the gain, i.e., the number of newly extracted distinct entities, for generalized queries. We prove that this budgeted crowdsourced entity extraction problem is NP-Hard. 
 \item {\em Gain Estimation for Generalized Queries.}  We develop a new technique to estimate the gain of generalized queries in the presence of little information, i.e., when only a small portion of the underlying entity population has been observed. We empirically demonstrate its effectiveness when extracting entities from sparse domains.
 \item {\em Adaptive Querying Strategies.} We propose an algorithmic framework that exploits the structure of the entity domain to maximize the number of extracted entities under budget constraints by targeting tail entities. We view the problem of entity extraction as a {\em multi-round adaptive optimization problem}. At  each round we exploit the available information about entities obtained by previous queries to adaptively select the next query that maximizes the overall {\em cost-gain} trade-off.
 \squishend
 
 We evaluate our techniques on both real-world and synthetic data and show that CRUX extracts up to {\em 300\%} more entities compared to a collection of baselines, and for large entity domains is at {\em most 25\%} away from an omniscient adaptive querying strategy with perfect information.
 
-The remainder of the paper is organized as follows: In \Cref{sec:prelims} we formalize the notion of a structured data domain, in \Cref{sec:problem} we define the problem of budgeted crowdsourced entity extraction and show that the problem is NP-hard. In \Cref{sec:gainestimators}, we describe techniques for estimating the gain of further queries. Then in \Cref{sec:solving}, we introduce an algorithm for discovering the most profitable queries to be issued against the crowd. In \Cref{sec:exps} we present an empirical evaluation for CRUX on both real-world and synthetic data from two distinct application domains and demonstrate CRUX's lead over competing state-of-the-art techniques for the same budget. Finally, we discuss related work in \Cref{sec:related} and conclude in \Cref{sec:conclusions}.
+The remainder of the paper is organized as follows: In \Cref{sec:prelims} we formalize the notion of a structured data domain, in \Cref{sec:problem} we define the problem of budgeted crowdsourced entity extraction and show that the problem is NP-hard. In \Cref{sec:gainestimators}, we describe techniques for estimating the gain of further queries. Then in \Cref{sec:solving}, we introduce an algorithm for discovering the most profitable queries to be issued against the crowd. In \Cref{sec:exps} we present an empirical evaluation for CRUX on both real-world and synthetic data from two distinct application domains. 

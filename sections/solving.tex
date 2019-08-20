@@ -1,33 +1,46 @@
-%!TEX root = ../crux.tex
+%!TEX root = ../crux-sigconf.tex
 
 
 \section{Discovering Querying Policies}
 \label{sec:solving}
-We now focus on the core component of CRUX responsible for discovering querying policies that maximize the total number of extracted entities by exploiting the structure of the input domain.  We introduce a heuristic multi-round adaptive optimization algorithm for identifying good querying strategies. At each round we assume oracle access to a gain estimator for any query $q^v(k,E)$. Such oracles are constructed using the techniques in the previous section. The gain of each query can be viewed as a random variable. By issuing a query we get to observe the value of this random variable, and using the previous observations we decide which query to issue next. Our framework builds upon ideas from the multi-armed bandit literature~\cite{Auer:2003,EvenDar06actionelimination}. We discuss some challenges associated with this adaptive optimization problem.
+We now focus on the core component of CRUX responsible for discovering querying policies that maximize the total number of extracted entities by exploiting the structure of the input domain.  We introduce a multi-round adaptive optimization algorithm for identifying good querying strategies. At each round we assume access to a gain estimator for any query $q^v(k,E)$, constructed using the techniques in the previous section. The gain of each query can be viewed as a random variable. By issuing a query we get to observe the value of this random variable, and using the previous observations we decide which query to issue next. Our framework builds upon ideas from the multi-armed bandit literature~\cite{Auer:2003,EvenDar06actionelimination}, with additional challenges:
 
 \squishlist
-\item The first challenge is that the number of nodes in $\hierarchy$ is exponential in the number of attributes $\attributes$ describing $\domain$. Querying every node to estimate the expected return for queries $q^v(k,E)$ is prohibitively expensive. That said, typical budgets do not allow algorithms to query all nodes in the hierarchy, so this intractability may not hurt us all that much. We keep estimates for each of the nodes for which at least one entity has been retrieved.
-\item The second challenge is balancing the trade-off between {\em exploitation} and {\em exploration}~\cite{Auer:2003}. The first refers to querying nodes with sufficient retrieved entities, and hence, accurate estimates for their expected gain; the latter refers to exploring nodes to avoid myopic policies.
-\item The last challenge is optimizing over the exclude list. Optimizing all potential exclude lists (i.e., all subsets of observed entities) leads to an exponential explosion. To limit the query space we instead optimize over all potential query configurations $(k,l,v)$.
+\item The number of nodes in $\hierarchy$ is exponential in the number of attributes $\attributes$ describing $\domain$. Querying every node to estimate the expected return for queries $q^v(k,E)$ is prohibitively expensive. 
+\iftr
+That said, typical budgets do not allow algorithms to query all nodes in the hierarchy, so this intractability may not hurt us all that much. We keep estimates for each of the nodes for which at least one entity has been retrieved.
+\fi
+\item Balancing the trade-off between {\em exploitation}/{\em exploration}~\cite{Auer:2003} is hard. The first refers to querying nodes with sufficient retrieved entities, and hence, accurate estimates for their expected gain; the latter refers to exploring nodes to avoid myopic policies.
+
+\item Optimizing all potential exclude lists (i.e., all subsets of observed entities) leads to an exponential explosion. To limit the query space we instead optimize over all potential query configurations $(k,l,v)$.
 \squishend
 
 \subsection{Optimizing over Query Configurations}
 \label{sec:config}
-Instead of optimizing over all potential queries $q^v(k,E)$, we optimize over all potential query configurations $(k,l,v)$. That is, we do not optimize directly for the exclude list but rather for its size $l$. Once we decide on $l$ the exclude list $E$ is constructed following a randomized approach, where $l$ of the retrieved entities are included in the list uniformly at random. We use a randomized approach as a deterministic construction of $E$ that picks the {\em l-most} popular items in the sample is very sensitive to the {\em observed popularity distribution}. We chose to use uniform sampling performs since popularity-weighted sampling as the latter leads to unbiased popularity estimators. When the number of observed entities covers a small portion of the entire population the individual entity popularity estimates tend to be noisy. We empirically observed that a deterministic construction, especially during early queries, leads to poor popularity estimates. Thus, we follow a randomized approach. Below we denote a query configuration $(k,l,v)$ and a query $q^v(k,E)$ with $|E| = l$ using the same symbol $q$ for convenience. Given $l$ we construct $E$ following the aforementioned approach.
-
-We now need to estimate the gain for a configuration $(k,l,v)$ instead of a query $q^v(k,E)$. When $l = 0$, i.e., $E = \emptyset$, then we use the techniques introduced in \Cref{sec:gainestimators} directly. When $l \neq 0$, we use the following approach: We generate multiple instances of $q^v(k,E)$ queries using the configuration $(k,l,v)$ and use the techniques from \Cref{sec:gainestimators} to estimate the expected gain of each. The exclude list of each query is generated following the randomized approach described above. Finally, we estimate the expected gain of configuration $(k,l,v)$ by considering the average gain of all generated instances. The variance of the gain is also used to compute an upper bound on the gain of the configuration $(k,l,v)$ as described next.
+Instead of optimizing over all potential queries $q^v(k,E)$, we optimize over all potential query configurations $(k,l,v)$. That is, we do not optimize directly for the exclude list but rather for its size $l$. Once we decide on $l$, the exclude list $E$ is constructed following a randomized approach, where $l$ of the retrieved entities are included in the list uniformly at random. 
+\iftr
+We use a randomized approach as a deterministic construction of $E$ that picks the {\em l-most} popular items in the sample is very sensitive to the {\em observed popularity distribution}. We chose to use uniform sampling over popularity-weighted sampling as the latter leads to unbiased popularity estimators. When the number of observed entities covers a small portion of the entire population the individual entity popularity estimates tend to be noisy. We empirically observed that a deterministic construction, especially during early queries, leads to poor popularity estimates. Thus, we follow a randomized approach. 
+\fi
+Below, we denote a query configuration $(k,l,v)$ and a query $q^v(k,E)$ with $|E| = l$ using the same symbol $q$ for convenience. 
+\iftr
+Given $l$ we construct $E$ following the aforementioned approach.
+\fi
+We now need to estimate the gain for a configuration $(k,l,v)$ instead of a query $q^v(k,E)$. When $l = 0$, i.e., $E = \emptyset$, then we use the techniques introduced in \Cref{sec:gainestimators} directly. When $l \neq 0$, we generate multiple instances of $q^v(k,E)$ queries using the configuration $(k,l,v)$ and use the techniques from \Cref{sec:gainestimators} to estimate the expected gain of each. The exclude list of each query is generated following the randomized approach described above. Finally, we estimate the expected gain of configuration $(k,l,v)$ by considering the average gain of all generated instances. The variance of the gain is also used to compute an upper bound on the gain of the configuration $(k,l,v)$ as described next.
 
 \subsection{Balancing Exploration and Exploitation}
 \label{sec:balancing}
-The estimate of the expected gain of a query configuration $(k,l,v)$ is based on a rather small sample of the underlying population. Thus, exploiting this information at every round may lead to suboptimal decisions. Hence, we need to balance the trade-off between exploiting configurations for which the estimated gain is high and configurations that have not been selected many times. Formally, the latter corresponds to upper-bounding the expected gain of each configuration with a {\em confidence interval} that depends on both the variance of the expected gain and the number of times a query was issued~\cite{Auer:2003}.
+The estimate of the expected gain of a query configuration $(k,l,v)$ is based on a rather small sample of the underlying population---exploiting this information at every round may lead to suboptimal decisions. Hence, we need to balance the trade-off between exploiting configurations with high estimated gain and those that have not been selected many times. Formally, the latter corresponds to upper-bounding the expected gain of each configuration with a {\em confidence interval} that depends on the variance of the expected gain and the number of times a query was issued~\cite{Auer:2003}.
 
 Next, we use $q$ to denote a query configuration $(k,l,v)$. Let $r(q)$ denote the expected gain of $q$. This is an estimate of the true gain $r^*(q)$. Let $\sigma(q)$ be an error component on the gain of configuration $q$ chosen such that $r(q) - \sigma(q) \leq r^*(q) \leq r(q) + \sigma(q)$ with high probability. The parameter $\sigma(q)$ should take into account both the {\bf empirical variance} of the expected gain and our {\bf uncertainty} about the gain of query configuration $q$ if its has only been chosen a few times. Given $r(q)$ and $\sigma(q)$, we assign a score to each configuration by using a linear function of the quantity $r(q) + \sigma(q)$. This score prioritizes exploration when the variance or our uncertainty is high, and thus, we could potentially discover a profitable new configuration, and exploitation when the estimated gain is high. Next, we discuss how we set $\sigma(q)$.
 
-We proceed in rounds and at each round select a query configuration $q$. Let $n_{q,t}$ be the number of times we have chosen $q$ by round $t$, and $v_{q,t}$ be the maximum value between some constant (e.g., $0.01$) and the empirical variance for the gain for $q$ at round $t$. The latter can be computed via bootstrapping over the retrieved sample and applying the estimators from \Cref{sec:gainestimators} over the bootstrapped samples. Several techniques have been proposed in the multi-armed bandits literature to compute parameter $\sigma(q)$~\cite{teytaud:inria-00173263} \textcolor{red}{for both traditional bandits with stationary reward distributions and non-stationary distributions~\cite{besbes2014stochastic} as in our setup.} Teytaud et al.~\cite{teytaud:inria-00173263} showed that techniques considering both the variance and the number of times an action, here a query, has been chosen tend to outperform other proposed methods. Based on this, we choose to use the following formula for sigma:
+We proceed in rounds and at each round select a query configuration $q$. Let $n_{q,t}$ be the number of times we have chosen $q$ by round $t$, and $v_{q,t}$ be the maximum value between some constant (e.g., $0.01$) and the empirical variance for the gain for $q$ at round $t$. The latter can be computed via bootstrapping over the retrieved sample and applying the estimators from \Cref{sec:gainestimators} over the bootstrapped samples. Several techniques have been proposed in the multi-armed bandits literature to compute parameter $\sigma(q)$~\cite{teytaud:inria-00173263},
+that we can reuse\iftr
+for both traditional bandits with stationary reward distributions and non-stationary distributions~\cite{besbes2014stochastic} as in our setup
+. Teytaud et al.~\cite{teytaud:inria-00173263} showed that techniques considering both the variance and the number of times an action, here a query, has been chosen tend to outperform other proposed methods. Based on this, we choose to use the following formula for sigma:
 \begin{equation}
 \label{eq:upper}
 \sigma(q,t) = \sqrt{\frac{v_{q,t}\cdot\log(t)}{n_{q,t}}}
-\end{equation}
+\end{equation}\fi.
 
 \subsection{A Multi-Round Querying Policy Algorithm}
 \label{sec:heuristic}
@@ -60,23 +73,6 @@ We now introduce a multi-round algorithm for solving the budgeted entity enumera
 \RETURN $\uentities$
 \end{algorithmic}
 \end{algorithm}
-
-Algorithm~\ref{algo:overall} proceeds as follows: First it initializes the set $\uentities$ of extracted entities, the round count $t$, the remaining budget ${\sf Rembudget}$ and the set of candidate queries $\mathcal{Q}$ (i.e., query configurations to be considered) at the first round (Ln.3-6). Then it proceeds in rounds and iteratively selects one query configuration to be used until the total budget is utilized or the set of candidate queries is empty (Ln. 7). At each round our algorithm performs the following steps. It first detects a configuration in $\mathcal{Q}$ that maximizes the score quantity $\frac{r(q) + \sigma(q,t)}{c(q)}$ under the constraint that the cost $c(q)$ is less or equal to the remaining budget (Ln. 8). If no such configuration exists the algorithm terminates (Ln. 9-10). Otherwise, the algorithm proceeds by executing a query corresponding to the selected configuration $q^*$, updates the set of extracted entities, the remaining budget, the set of active queries, and the round counter (Ln. 11 - 17). Finally, Algorithm 1 returns the set of distinct entities extracted (Ln. 18). 
-
-\vspace{2pt}\noindent\textbf{Discussion.} The reason we choose $\frac{r(q) + \sigma(q,t)}{c(q)}$ as the query configuration score is due to the presence of a budget and the connection between budgeted crowdsourced entity extraction and knapsack style problems. Finally, method ${\sf ActiveQueryConf}$ is used to restrict the set of candidate query configurations considered by our algorithm. 
-
-\subsection{Updating the Set of Actions}
-\label{sec:badactions}
-We now introduce an algorithm to effectively limit the number of query configurations considered at each round of Algorithm \ref{algo:overall}. To do so we exploit the structure of poset $\hierarchy$ and the gain estimates for different configurations $q = (k,l,v)$. Let $\mathcal{Q}$ denote the set of candidate query configurations. We propose an algorithm that {\bf adds} configurations to $\mathcal{Q}$ by traversing the input poset in a top-down manner. These configurations $(k,l,v)$ correspond to nodes $v$ that are {\em direct descendants} of already queried nodes. 
-
-The reason we adopt a top-down traversal is two-fold: (i) Due to the hierarchical structure of the poset, nodes at higher levels correspond to larger populations of entities. Issuing queries at these nodes can potentially result in a larger number of extracted entities. Also, traversing the poset in a top-down manner allows us to detect sparsely populated areas of the poset and prune futile queries. (ii) According to our cost model, queries at higher-levels (i.e., less specialized queries) are cheaper, thus, the gain-to-cost ratio can be larger for queries at higher-levels of the poset.
-
-To limit the number of candidate configurations, we also {\bf remove} any {\em bad query configurations} from $\mathcal{Q}$. A configuration $q$ is defined to be bad at round $t$ when $r(q) + \sigma(q,t) < \max_{q^{\prime} \in \mathcal{Q}} (r(q^{\prime}) - \sigma(q^{\prime},t))$. Intuitively, we do not need to consider a configuration as long as there exists another such that the upper-bounded gain of the former is lower than the lower-bounded gain of the latter. This technique is also adopted in multi-armed bandits to limit the number of actions considered~\cite{EvenDar06actionelimination}. 
-
-Our algorithm for determining the set of active queries for each round is shown in Algorithm~\ref{algo:updateactions}. This also implements the method ${\sf ActiveQueryConf}$ introduced above. It takes as input the poset $\hierarchy$ describing the extraction domain, a set $K$ of valid query size assignments, a set $L$ of valid exclude list size assignments, the running set $\mathcal{Q}_{old}$ of active query configurations, the node $v^*$ associated with the last query issued, and the running round $t$. The algorithm also assumes access to an oracle providing $r(q)$ and $\sigma(q,t)$ characterizing the upper gain of a query configuration $q$.
-
-The algorithm proceeds as follows: If the running set of active queries is empty (Ln. 3), i.e., if we have issued no queries previously, the set of active query configurations is initialized to contain all potential configurations $(k,l)$ for the root of the poset $\hierarchy$ (Ln. 6). Otherwise, the algorithm first adds all configurations for the direct descendants of node $v^*$ to $\mathcal{Q}_{old}$ (Ln. 9 - 11) and then removes any bad configurations from the new set $\mathcal{Q}_{new}$ (Ln.13-16). The algorithm terminates by returning the set $\mathcal{Q}_{new}$.
-
 \begin{algorithm}[h]
 \footnotesize\caption{ActiveQueryConf}
 \label{algo:updateactions}
@@ -102,4 +98,28 @@ The algorithm proceeds as follows: If the running set of active queries is empty
 \RETURN $\mathcal{Q}_{new}$
 \end{algorithmic}
 \end{algorithm}
-\vspace{-5pt}
+
+
+Algorithm~\ref{algo:overall} proceeds as follows: First it initializes the set $\uentities$ of extracted entities, the round count $t$, the remaining budget ${\sf Rembudget}$ and the set of candidate queries $\mathcal{Q}$ (i.e., query configurations to be considered) at the first round (Ln.3-6). Then it proceeds in rounds and iteratively selects one query configuration to be used until the total budget is utilized or the set of candidate queries is empty (Ln. 7). At each round our algorithm performs the following steps. It first detects a configuration in $\mathcal{Q}$ that maximizes the score quantity $\frac{r(q) + \sigma(q,t)}{c(q)}$ under the constraint that the cost $c(q)$ is less or equal to the remaining budget (Ln. 8). If no such configuration exists the algorithm terminates (Ln. 9-10). Otherwise, the algorithm proceeds by executing a query corresponding to the selected configuration $q^*$, updates the set of extracted entities, the remaining budget, the set of active queries, and the round counter (Ln. 11 - 17). Finally, Algorithm 1 returns the set of distinct entities extracted (Ln. 18). 
+
+\iftr
+\vspace{2pt}\noindent\textbf{Discussion.} The reason we choose $\frac{r(q) + \sigma(q,t)}{c(q)}$ as the query configuration score is due to the presence of a budget and the connection between budgeted crowdsourced entity extraction and knapsack style problems. Finally, method ${\sf ActiveQueryConf}$ is used to restrict the set of candidate query configurations considered by our algorithm. 
+\fi
+
+\subsection{Updating the Set of Actions}
+\label{sec:badactions}
+We now introduce an algorithm to effectively limit the number of query configurations considered at each round of Algorithm \ref{algo:overall}. To do so we exploit the structure of poset $\hierarchy$ and the gain estimates for different configurations $q = (k,l,v)$. Let $\mathcal{Q}$ denote the set of candidate query configurations. We propose an algorithm that {\bf adds} configurations to $\mathcal{Q}$ by traversing the input poset in a top-down manner. These configurations $(k,l,v)$ correspond to nodes $v$ that are {\em direct descendants} of already queried nodes. 
+
+\iftr
+The reason we adopt a top-down traversal is two-fold: (i) Due to the hierarchical structure of the poset, nodes at higher levels correspond to larger populations of entities. Issuing queries at these nodes can potentially result in a larger number of extracted entities. Also, traversing the poset in a top-down manner allows us to detect sparsely populated areas of the poset and prune futile queries. (ii) According to our cost model, queries at higher-levels (i.e., less specialized queries) are cheaper, thus, the gain-to-cost ratio can be larger for queries at higher-levels of the poset.
+\fi
+
+To limit the number of candidate configurations, we also {\bf remove} any {\em bad query configurations} from $\mathcal{Q}$. A configuration $q$ is defined to be bad at round $t$ when $r(q) + \sigma(q,t) < \max_{q^{\prime} \in \mathcal{Q}} (r(q^{\prime}) - \sigma(q^{\prime},t))$. Intuitively, we do not need to consider a configuration as long as there exists another such that the upper-bounded gain of the former is lower than the lower-bounded gain of the latter. This technique is also adopted in multi-armed bandits to limit the number of actions considered~\cite{EvenDar06actionelimination}. 
+
+Our algorithm for determining the set of active queries for each round is shown in Algorithm~\ref{algo:updateactions}. 
+\iftr
+This also implements the method ${\sf ActiveQueryConf}$ introduced above. It takes as input the poset $\hierarchy$ describing the extraction domain, a set $K$ of valid query size assignments, a set $L$ of valid exclude list size assignments, the running set $\mathcal{Q}_{old}$ of active query configurations, the node $v^*$ associated with the last query issued, and the running round $t$. The algorithm also assumes access to an oracle providing $r(q)$ and $\sigma(q,t)$ characterizing the upper gain of a query configuration $q$.
+\fi
+It proceeds as follows: If the running set of active queries is empty (Ln. 3), i.e., if we have issued no queries previously, the set of active query configurations is initialized to contain all potential configurations $(k,l)$ for the root of the poset $\hierarchy$ (Ln. 6). Otherwise, the algorithm first adds all configurations for the direct descendants of node $v^*$ to $\mathcal{Q}_{old}$ (Ln. 9 - 11) and then removes any bad configurations from the new set $\mathcal{Q}_{new}$ (Ln.13-16). The algorithm terminates by returning the set $\mathcal{Q}_{new}$.
+
+

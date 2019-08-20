@@ -1,33 +1,41 @@
-%!TEX root = ../crux.tex
-\section{Budgeted Crowdsourced Extraction}
+%!TEX root = ../crux-sigconf.tex
+\section{Budgeted Extraction}
 \label{sec:problem}
 We now define {\em budgeted crowd entity extraction} over structured domains and present an overview of our framework.
 \subsection{Problem Definition}
 \label{sec:extraction}
-The problem of {\em crowdsourced entity extraction} seeks to extract entities that belong to $\domain$.  For large entity structured domains, one may need to issue a series of entity extraction queries at multiple nodes in  $\hierarchy$ --- often overlapping with each other --- to ensure that the coverage across the domain is maximized. We refer to a series of  generalized $q^v(k,E)$ queries at different nodes $v \in \hierarchy$ as a {\em querying policy}.
+The problem of {\em crowdsourced entity extraction} seeks to extract entities that belong to $\domain$.  For large entity structured domains, one may need to issue a series of entity extraction queries at multiple nodes in  $\hierarchy$---often overlapping with each other---to ensure that the coverage across the domain is maximized. We refer to a series of  generalized $q^v(k,E)$ queries at different nodes $v \in \hierarchy$ as a {\em querying policy}.
 
 Let $\pi$ denote a querying policy. A policy $\pi$ can select a query $q^v(k,E)$ multiple times. Let $C(\pi)$ denote the overall monetary cost of policy $\pi$. We define the gain of $\pi$, denoted by $\uentities(\pi)$, to be the total number of unique entities extracted when following $\pi$. There is a natural trade-off between the gain (i.e., the number of extracted entities) and the cost of policies. 
 
-We require that the user will {\em only} provide a monetary budget $\tau_c$ imposing a constraint on the total cost of a querying policy. The poset $\hierarchy$ and the possible query size and exclude list size configurations $(k,l)$ for each node are given as input by the application designer. Our goal is to optimize over all possible querying policies across different nodes of $\hierarchy$ and identify the policy that maximizes the number of retrieved entities under the given budget constraint. We define the problem of budgeted crowd entity extraction as follows:
+We require that the user will {\em only} provide a monetary budget $\tau_c$. The poset $\hierarchy$ and the possible query size and exclude list size configurations $(k,l)$ for each node are given as input by the application designer. Our goal is to identify the querying policy that maximizes the number of retrieved entities under the given budget constraint:
 
-\begin{problem}[{\bf Budgeted Crowd Entity Extraction}]
-Let $\domain$ be an entity domain characterized by a poset $\hierarchy$. For each node $v \in \hierarchy$, let $K^v$ and $L^v$ be the sets of allowed query sizes and exclude list sizes for queries at node $v$. Let $\tau_c$ be a budget on the total cost of issued queries. The Budgeted Crowd Entity Extraction problem seeks to find a querying policy $\pi^*$ using queries $q^v(k,E)$ with $k \in K^v$ and $|E| = l \in L^v$ over nodes $v \hierarchy$ that maximizes the number of unique entities extracted $\uentities(\pi^*)$ under the constraint $C(\pi^*) \leq \tau_c$.
+\begin{problem}[{\bf Budgeted Crowd Entity Extraction}]\label{prob:budgeted}
+Let $\domain$ be an entity domain characterized by a poset $\hierarchy$. For each node $v \in \hierarchy$, let $K^v$ and $L^v$ be the sets of allowed query sizes and exclude list sizes for queries at node $v$. Let $\tau_c$ be a budget on the total cost of issued queries. Find a querying policy $\pi^*$ using queries $q^v(k,E)$ with $k \in K^v$ and $|E| = l \in L^v$ over nodes $v \in \hierarchy$ that maximizes $\uentities(\pi^*)$, the number of unique entities extracted, under the constraint $C(\pi^*) \leq \tau_c$.
 \end{problem}
-Note that the optimal policy not only specifies the nodes at which queries will be executed but also the size and exclude list of each query. The cost of a querying policy $\pi$ is $C(\pi) = \sum_{q \in \pi} c(q)$, where the cost of each query $q^v$ is defined according to a cost model specified by the user, is easy to compute. However, the number of unique entities extracted by a policy is not known upfront and needs to be estimated as we discuss in \Cref{sec:gainestimators}. Moreover, the problem of finding an optimal querying policy is NP-hard as we show next. 
+Note that the optimal policy not only specifies the nodes at which queries will be executed but also the size and exclude list of each query. The cost of a querying policy $\pi$ is $C(\pi) = \sum_{q \in \pi} c(q)$, where the cost of each query $q^v$ is defined according to a cost model specified by the user, is easy to compute. However, the number of unique entities extracted by a policy is not known upfront and needs to be estimated as we discuss in \Cref{sec:gainestimators}. Moreover, the problem of finding an optimal querying policy is NP-hard. 
 
-\begin{theorem}[{\bf NP-Hardness}]
-The problem of Budgeted Crowd Entity Extraction is NP-hard.
+\begin{theorem}[{\bf NP-Hardness}\label{thm:NPH}]
+Problem~\ref{prob:budgeted} is NP-hard.
 \end{theorem}
-The proof is provided in \Cref{sec:prth1} and is based on a reduction from the {\em unbounded knapsack} problem. The latter is a variation of the original 0-1 knapsack problem that places no upper bound on the number of copies of each kind of item. The full proof is available in Appendix~\ref{sec:prth1}.
+The proof is provided 
+\iftr in \Cref{sec:prth1}
+\fi
+\ifpaper in our technical report~\cite{cruxsup} (with all other proofs)
+\fi 
+and is based on a reduction from the {\em unbounded knapsack} problem. This problem is a variation of the original 0-1 knapsack problem that places no upper bound on the number of copies of each kind of item. 
 
 Finally, computing the total cost of a policy $\pi$ is easy. However, the gain $\uentities(\pi)$ of a policy $\pi$ is unknown as we do not know in advance the entities corresponding to each node in $\hierarchy$, and hence, needs to be estimated (see \Cref{sec:gainestimators}). 
 
 \subsection{Query Response Model}
 \label{sec:sampling}
-To reason about the occurrence of entities as response to specific queries, we need an underlying query response model. Our query response model is based on the notion of {\em popularity}. We assume that each entity has an {\em unknown popularity value} with respect to crowd workers. Since workers are likely to return different answers based on how the query is phrased, this popularity can be different for different nodes in $\hierarchy$, and thus, is query-dependent. 
-Given a query $q^v(1, \emptyset)$, the probability that we get entity $e$ in the result of $q^v$ is nothing but the popularity value of $e$ divided by the popularity value of all entities $e'$ that also satisfy the same predicate constraints. For example, if there are only two entities $e_1, e_2$ that satisfy the constraints of a query $q_1$, with popularity values $3$ and $2$, then the probability that we get $e_1$ on issuing a query $q_1(1, \emptyset)$ is 3/5. If an exclude list $E$ is specified, then the probability that we get $e \notin E$ is the popularity value of $e$ divided by the popularity values of all entities $e' \notin E$ also satisfying the predicates of $q^v$. 
+To reason about the occurrence of entities as response to specific queries, we assume that each entity has an {\em unknown popularity value} with respect to crowd workers. Since workers are likely to return different answers based on how the query is phrased, this popularity can be different for different nodes in $\hierarchy$, and thus, is query-dependent. 
+Given a query $q^v(1, \emptyset)$, the probability that we get entity $e$ in the result of $q^v$ is simply the popularity value of $e$ divided by the popularity value of all entities $e'$ that also satisfy the same predicate constraints. For example, if there are only two entities $e_1, e_2$ that satisfy the constraints of a query $q_1$, with popularity values $3$ and $2$, then the probability that we get $e_1$ on issuing a query $q_1(1, \emptyset)$ is 3/5. If an exclude list $E$ is specified, then the probability that we get $e \notin E$ is the popularity value of $e$ divided by the popularity values of all entities $e' \notin E$ also satisfying the predicates of $q^v$. 
 
-Since workers are asked to provide a limited number of entities, each query can be viewed as taking a random sample from an unknown population of entities. We refer to the distribution characterizing the popularities of entities in a population as the {\em popularity distribution} of the population. We do not need to know the popularity distribution in advance; rather we use the samples retrieved by previous queries as a proxy to reason about this distribution. Also, it is not needed that workers follow the same popularity distribution. Rather, the overall popularity distribution can be seen as an average of the popularity distributions across all workers. \textcolor{red}{Estimating average statistics across workers is standard practice in crowdsourcing applications~\cite{DasSarma:2016:TGO:2882903.2882953,trushkowsky:2013} as due to the sparsity in the number of answers per worker (especially since workers are fleeting on marketplaces), developing fine-grained models of worker responses can be challenging.}
+Since workers are asked to provide a limited number of entities, each query can be viewed as taking a random sample from an unknown population of entities. We refer to the distribution characterizing the popularities of entities in a population as the {\em popularity distribution} of the population. We do not know the popularity distribution in advance; rather we use the samples retrieved by previous queries as a proxy to reason about this distribution. Also, it is not necessary that workers follow the same popularity distribution. Rather, the overall popularity distribution can be seen as an average of the popularity distributions across all workers. 
+\iftr
+Estimating average statistics across workers is standard practice in crowdsourcing applications~\cite{DasSarma:2016:TGO:2882903.2882953,trushkowsky:2013} since due to the sparsity in the number of answers per worker (especially since workers are fleeting on marketplaces), developing fine-grained models of worker responses can be challenging.
+\fi
 
 Estimating the gain of a query $q^v(k,E)$ at a node $v \in \hierarchy$ is equivalent to estimating the number of new entities extracted by taking additional samples from the population of $v$ given all the retrieved entities ({\em running sample}) associated with node $v$. Due to the structure of the poset we may retrieve entities for a node when issuing queries at other nodes. We discuss this form of {\em indirect sampling} in \Cref{sec:indirectsampling}. 
 
@@ -67,7 +75,7 @@ Estimating the gain of a query $q^v(k,E)$ at a node $v \in \hierarchy$ is equiva
 CRUX casts the budgeted crowd entity extraction problem as a multi-round adaptive optimization problem where at each round we solve the following subproblems: 
 \squishlist 
 \item \textbf{Estimating the Gain for a Query}~(\Cref{sec:gainestimators}). For each node $v \in \hierarchy$, consider the retrieved entities associated with $v$ and estimate the number of new unique entities that will be retrieved by a new query $q^v(k,E)$. The query gain is estimated for different query size and exclude list configurations.
-\item \textbf{Detecting the Optimal Querying Policy}~(\Cref{sec:solving}). Using the gain estimates from the previous step, identify the query configuration $(k,l,v)$ that maximized the total gain across all rounds given the budget constraint. When identifying the next query we do not explicitly optimize for the exclude list to be used. We rather optimize for the exclude list size $l$. Once the size is selected, the exclude list is constructed in a randomized fashion. We elaborate more on this in \Cref{sec:config}.
+\item \textbf{Detecting the Optimal Querying Policy}~(\Cref{sec:solving}). Using the gain estimates from the previous step, identify the query configuration $(k,l,v)$ that maximizes the total gain across all rounds given the budget constraint. When identifying the next query we do not explicitly optimize for the exclude list to be used. We rather optimize for the exclude list size $l$. Once the size is selected, the exclude list is constructed in a randomized fashion. We elaborate more on this in \Cref{sec:config}.
 \squishend
 CRUX iteratively solves the aforementioned problems until the entire budget is used. 
 %\Cref{fig:framework} shows a high-level diagram of our proposed framework.
